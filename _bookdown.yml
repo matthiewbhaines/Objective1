@@ -1,0 +1,15 @@
+book_filename: "bookdown-example"
+new_session: true
+delete_merged_file: true
+keep_md: true
+language:
+  ui:
+    chapter_name: "Chapter "
+rmd_files: [
+  "index.Rmd",
+  "08-Bitter10.Rmd",
+  "09-Sour10.Rmd",
+  "10-Bitter05.Rmd",
+  "11-Sour05.Rmd"
+]
+
