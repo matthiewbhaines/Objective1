@@ -155,7 +155,7 @@ Milk10S8C <- RIndex(14,3,3,1,2,7,length(df10closed$participant))
 Rcriti(length(df10closed$participant), length(df10closed$participant), 0.01, 2)
 ```
 
-- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8C)[1], 2)`, 0.05 $\ge$ p $\ge$ 0.01)  
+- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8C)[1], 2)`, p $\leq$ **0.05**)  
     + interestingly, the skim milk sample (the "noise") was chosen more frequently than the whole milk sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_19_v_21_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
 
 ```{r study1closed 17% milk, include=FALSE}
