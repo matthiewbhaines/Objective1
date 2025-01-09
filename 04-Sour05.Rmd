@@ -1,0 +1,880 @@
+# 1:5 Sourness {#Sour5}
+
+This will be the data analysis and results of the 1:5 nose closed study run in November 2023 and the 1:5 nose open study run in September 2023 on sourness. ~~(Note 01-06-25: Check these dates.)~~  
+You can refer to the 1:5 Bitterness results [here](#Bitter5).  
+
+## Nose Closed Condition
+```{r study4library, message=FALSE, warning=FALSE, include=FALSE}
+# data wrangling
+library(plyr)
+library(tidyverse) # data wrangling
+library(str2str) # R viz wrangling
+library(readxl) # read in data
+library(Rmisc) # summarySE()
+library(agricolae) #LSD test
+library(janitor) #clean_names()
+library(tibble)
+
+# correlations
+library(Hmisc)
+
+# analysis
+library(sensR)
+
+#visualizations
+library(ggplot2) # plotting
+library(grid) # adjusting axes on plots
+library(ggsignif) #add signif to plots
+library(cowplot) #combining plots
+library(patchwork)
+library(gghighlight)
+library(knitr)
+library(ggpmisc)
+library(ggrepel)
+```
+```{r study4Rcriti, include=FALSE}
+# R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
+# It recreates a ROC (receiver operating characteristic) curve based on choice/confidence data.
+# The statistic can be interpreted as the proportion of people who chose sample Y over X, *P(X \< Y)*.
+# From @biRindexCriticalValue88
+
+Rcriti<- function(nc, nt, alpha, side) {#R-index critical value in difference testing, i.e.,rc= 50*(Rc-0.5); Rc=0.5+rc/100
+
+#nc, nt are sample sizes of the control sample and the test sample
+
+#alpha is a significance level; side=1 is a one-sided test and side=2 is two-sided test
+
+#See, @biUpdatedExtendedTable807
+
+if(side==2){
+
+z <- qnorm(1 - alpha/2)}
+
+if(side==1)
+
+{z<-qnorm(1-alpha)}
+
+rcf <- function(Rc, nc, nt, z)
+
+{
+
+q1 <- Rc/(2 - Rc)
+
+q2 <- (2 * Rc^2)/(1 + Rc)
+
+va <- Rc * (1 - Rc) + (nt - 1) * (q1 - Rc^2) + (nc - 1) * (q2 - Rc^2)
+
+va <- va/(nc * nt)
+
+s <- sqrt(va)
+
+(Rc - 0.5)/s - z
+
+}
+
+Rc <- uniroot(rcf, interval = c(0.5, 0.9999), nc = nc, nt = nt, z = z)
+
+Rc <- Rc[[1]]
+
+rc <- 100 * (Rc - 0.5)
+
+rc <- round(rc, 2)
+
+rc
+
+cat("rc and Rc values:","/n")
+
+all<-c(rc,Rc)
+
+all<-round(all,2)
+
+all
+
+}
+```
+```{r study4RIndex, include=FALSE}
+RIndex <- function(a,b,c,d,e,f,n) {
+# a = S!, b = S, c = S?
+# d = N?, e = N, f = N!, n = sample size
+  aa <- a*(a+b+c+d+e)
+  bb <- b*(a+b+c+d)
+  cc <- c*(a+b+c)
+  dd <- d*(a+b)
+  ee <- e*a
+  prod <- .5*((a*f)+ (b*e)+ (c*d)+ (c*d)+ (b*e)+ (a*f))
+  denom <- (n^2)
+  
+  index<- sum(aa,bb,cc,dd,ee,prod)/denom 
+  #formula from [@omahonySensoryEvaluationFood1986]
+  
+  if (1-index >= 0.5){
+    r <- 1-index
+    print(c(r, "Signal")) #this says which S/N was > 50%
+  } else {
+    r <- index
+    print(c(r, "Noise")) #this says which S/N was > 50%
+  }
+}
+```
+
+```{r study4closed data wrangling, include=FALSE}
+brew5closedsour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 7) 
+# ~/ not necessary when in working directory, just use "filename.xlsx"
+
+brew5closedsour <- t(brew5closedsour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(brew5closedsour, is.character)
+brew5closedsour[ ,chars] <- as.data.frame(apply(brew5closedsour[,chars],2, as.numeric))
+# turn data frame from char to numeric
+
+brew5closedsour <- brew5closedsour %>% rownames_to_column(var = "participant")
+# create participant column
+```
+
+### R Index  
+ 
+The critical value for a 2-tailed test is `r round(Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 1)[2],2)`.  
+
+```{r study4closed rindex milks, echo=FALSE, include=FALSE}
+Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 2)
+```
+```{r study4closed 8% milk, include=FALSE}
+brew5closedsour %>% select(comparison_7_v_9_more_sour, confidence_9) %>% count(comparison_7_v_9_more_sour, confidence_9)
+Milk5S8CSour <- RIndex(13,5,0,1,1,10,length(brew5closedsour$participant)) 
+```
+
+- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk5S8CSour)[1], 2)`, p > 0.05)  
+
+```{r study4closed 17% milk, include=FALSE}
+brew5closedsour %>% select(comparison_1_v_3_more_sour, confidence_3) %>% count(comparison_1_v_3_more_sour, confidence_3)
+Milk5S17CSour <- RIndex(7,6,1,3,6,7,length(brew5closedsour$participant))
+```
+
+- no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = `r round(as.numeric(Milk5S17CSour)[1], 2)`, p > 0.05)  
+
+```{r study4closed r wrangling milk, include=FALSE}
+Milk5RSour <- tibble(
+  Sample = "sample",
+  Percent = factor(c("8% Addition", "17% Addition"),
+                   levels = c("8% Addition", "17% Addition")),
+  Condition = "Closed",
+  Rindex = c(as.numeric(v2d(Milk5S8CSour, along = 1)$V1), as.numeric(v2d(Milk5S17CSour, along = 1)$V1)),
+  Critical = as.numeric(Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 2)[2]),
+  S.N = c((v2d(Milk5S8CSour, along = 1)$V2),
+             (v2d(Milk5S17CSour, along = 1)$V2)),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B22222",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888")))
+
+rcritical_5Sour <- Milk5RSour %>% filter(Percent == "8% Addition")
+
+
+study4closedMilkRViz <- Milk5RSour %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Milk5RSour$Sig, color = "black") +
+  facet_grid(~Percent) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  scale_x_discrete(labels = c("Skim/Whole", "Skim/Whole")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_text(data = rcritical_5Sour,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  coord_cartesian(ylim = c(.5, 1)) 
+
+```
+```{r study4ClosedMilkRViz, echo=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
+study4closedMilkRViz
+# LaTeX is not supported in figure captions
+```
+
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the sourness, therefore making the water sample the more sour. The critical value for a one tailed R-index calculation is `r round(Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 1)[2], 2)`.  
+
+```{r study4closed rindex water, echo=FALSE, include=FALSE}
+Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 1)
+```
+
+```{r study4closed 8% water, include=FALSE}
+brew5closedsour %>% select(comparison_8_v_11_more_sour, confidence_11) %>% count(comparison_8_v_11_more_sour, confidence_11)
+water5S8CSour <- RIndex(3,5,1,2,4,15,length(brew5closedsour$participant))
+Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.001, 1)
+
+brew5closedsour %>% select(comparison_10_v_12_more_sour, confidence_12) %>% count(comparison_10_v_12_more_sour, confidence_12)
+water5W8CSour <- RIndex(8,4,1,0,6,11,length(brew5closedsour$participant))
+
+```
+
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water5S8CSour)[1], 2)`, p $\le$ 0.001)  
+
+- no discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(as.numeric(water5W8CSour)[1], 2)`, p > 0.05)   
+
+```{r study4closed 17 water, include=FALSE}
+brew5closedsour %>% select(comparison_2_v_5_more_sour, confidence_5) %>% count(comparison_2_v_5_more_sour, confidence_5)
+water5S17CSour <- RIndex(4,2,2,2,4,16,length(brew5closedsour$participant))
+Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.001, 1)
+
+brew5closedsour %>% select(comparison_4_v_6_more_sour, confidence_6) %>% count(comparison_4_v_6_more_sour, confidence_6)
+water5W17CSour <- RIndex(6,0,2,1,4,17,length(brew5closedsour$participant))
+Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.001, 1)
+```
+
+- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water5S17CSour)[1], 2)`, p $\le$ 0.001)  
+- discrimination between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water5W17CSour)[1], 2)`, p $\le$ 0.001)  
+
+```{r study4closed r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
+Water5RSour <- tibble(
+  Sample = factor(c(rep(c("S5", "S6"),2))),
+  Percent = factor(c(rep("8% Addition",2), rep("17% Addition",2)),
+                   levels = c("8% Addition", "17% Addition")),
+  Condition = "Closed",  
+  Rindex = c(as.numeric(v2d(water5S8CSour, along = 1)$V1),
+             as.numeric(v2d(water5W8CSour, along = 1)$V1),
+             as.numeric(v2d(water5S17CSour, along = 1)$V1),
+             as.numeric(v2d(water5W17CSour, along = 1)$V1)),
+  S.N = c((v2d(water5S8CSour, along = 1)$V2),
+             (v2d(water5W8CSour, along = 1)$V2),
+             (v2d(water5S17CSour, along = 1)$V2),
+             (v2d(water5W17CSour, along = 1)$V2)),
+  Critical = as.numeric(Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 1)[2]),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B10102",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888"))
+  )
+
+compareU <- Water5RSour %>% 
+  filter(Sig %in% "#B10102")
+compareV <- compareU %>% filter(Percent == "17% Addition")
+
+rcritical_5WSour <- Water5RSour %>% filter(Sample == "S5" & Percent == "8% Addition")
+
+
+study4closedWaterRViz <- Water5RSour %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Water5RSour$Sig, color = "black") +
+  facet_grid(~Percent) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  scale_x_discrete(labels = c("Skim/Water", "Whole/Water", "Skim/Water", "Whole/Water")) +  
+  geom_signif(data = compareU,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_signif(data = compareV,
+              y_position = 0.95, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_text(data = rcritical_5WSour,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  geom_vline(xintercept = 1.5) +
+  coord_cartesian(ylim = c(.5, 1)) 
+```
+```{r study4ClosedWaterRViz, echo=FALSE, warning=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
+study4closedWaterRViz
+```
+
+- only the 8% whole milk could not be distinguished fro the 8% water addition on sourness. How does this compare to \@ref(fig:study2ClosedWaterRViz)?
+
+### Ratings  
+The paired comparison will only show which sample is more sour (or discriminated against), without showing a magnitude of the difference. Thus, sourness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
+
+```{r study4closed ratings wrangling, include=FALSE}
+brew5closedsour_ratings <- brew5closedsour %>% select(participant, starts_with("sourness"))
+
+brew5closedsour_ratings_long <- brew5closedsour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+
+sample_order <- c("sourness_1", "sourness_3", "sourness_2", "sourness_5", "sourness_4", "sourness_6", "sourness_7", "sourness_9", "sourness_8", "sourness_11", "sourness_10", "sourness_12")
+```
+
+```{r study4KableClosedRatings, echo=FALSE}
+kable(summarySE(brew5closedsour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, sd, se) %>%  arrange(factor(Sample, levels = sample_order)),
+      caption = "Sourness intensities, standard deviation, and standard error of cold brew coffee samples. Each 2 rows represent the two samples presented in a paired comparison format.")
+# may want to learn how to create tables in LaTeX
+```
+
+```{r study4notes, include=FALSE, eval=FALSE}
+0.05/6 #Bonferroni corrected p
+# use $statistic to print t-value
+# use $p.value to print p value
+# is the Bonferroni correction0.05/6 (total comparisons) or 0.05/3 (comparisons within a percent block)
+```
+
+The Bonferroni corrected $\alpha$ would be `r round(0.05/6, 4)`.
+
+```{r study4closed t-test, collapse=TRUE, comment=""}
+#| collapse = TRUE
+t.test(brew5closedsour$sourness_7, brew5closedsour$sourness_9, paired = TRUE, alternative = "two.sided") 
+t.test(brew5closedsour$sourness_11, brew5closedsour$sourness_8, paired = TRUE, alternative = "greater")
+t.test(brew5closedsour$sourness_12, brew5closedsour$sourness_10, paired = TRUE, alternative = "greater")
+
+t.test(brew5closedsour$sourness_1, brew5closedsour$sourness_3, paired = TRUE, alternative = "two.sided")
+t.test(brew5closedsour$sourness_5, brew5closedsour$sourness_2, paired = TRUE, alternative = "greater")
+t.test(brew5closedsour$sourness_6, brew5closedsour$sourness_4, paired = TRUE, alternative = "greater")
+```
+
+- no significant difference in ratings between the 8% skim milk and 8% whole milk comparison (t = `r round(t.test(brew5closedsour$sourness_7, brew5closedsour$sourness_9, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_7, brew5closedsour$sourness_9, paired = TRUE, alternative = "two.sided")$p.value, 3)`)    
+- Ratings between the 8% skim milk and 8% water were significantly different (t = `r round(t.test(brew5closedsour$sourness_11, brew5closedsour$sourness_8, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_11, brew5closedsour$sourness_8, paired = TRUE, alternative = "greater")$p.value,4)`)  
+- Ratings between the 8% whole milk and 8% water were marginally different (t = `r round(t.test(brew5closedsour$sourness_12, brew5closedsour$sourness_10, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_12, brew5closedsour$sourness_10, paired = TRUE, alternative = "greater")$p.value,2)`)  
+
+-  no significant difference in ratings between the 17% skim milk and 17% whole milk comparison (t = `r round(t.test(brew5closedsour$sourness_1, brew5closedsour$sourness_3, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_1, brew5closedsour$sourness_3, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
+- Ratings between the 17%% skim milk and 17%% water were significantly different (t = `r round(t.test(brew5closedsour$sourness_5, brew5closedsour$sourness_2, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_11, brew5closedsour$sourness_8, paired = TRUE, alternative = "greater")$p.value,4)`)  
+- Ratings between the 17% whole milk and 17% water were significantly different (t = `r round(t.test(brew5closedsour$sourness_6, brew5closedsour$sourness_4, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew5closedsour$sourness_12, brew5closedsour$sourness_10, paired = TRUE, alternative = "greater")$p.value,2)`) 
+
+```{r study4closed viz wrangling, include=FALSE}
+brew5closedsour_ratings_long2 <- brew5closedsour_ratings_long
+length(brew5closedsour$participant) # 30
+length(brew5closedsour_ratings_long2$participant) # 360
+brew5closedsour_ratings_long2$condition <- rep("Closed", 360)
+brew5closedsour_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 60) 
+brew5closedsour_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 30)
+brew5closedsour_ratings_long2$sample2 <- brew5closedsour_ratings_long2$Sample
+
+brew5closedsour_ratings_trim <- brew5closedsour_ratings_long2 %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" =  "S6")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" =  "S6"))
+
+
+SE_sour <- summarySE(brew5closedsour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% 
+  select(Sample, Intensity, se) %>% 
+  arrange(factor(Sample, levels = sample_order)) %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" =  "S6")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" =  "S6"))
+  
+SE_sour$percent <- c(rep("17% Addition", 6), rep("8% Addition", 6))
+
+kable(SE_sour %>% arrange(percent, factor(Sample, levels = c("S1", "S3", "S2", "S5", "S4", "S6"))) %>% relocate(percent))
+
+compareW <- brew5closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_8", "sourness_11"))
+  
+compareX <- brew5closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_10", "sourness_12"))
+
+compareY <- brew5closedsour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_2", "sourness_5"))
+
+compareZ <- brew5closedsour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_4", "sourness_6"))
+
+
+```
+
+```{r study4ClosedMilkRatings, echo=FALSE}
+study4closedMilkRatings <- brew5closedsour_ratings_trim %>% 
+  filter(Sample %in% c("S1", "S3")) %>% 
+  ggplot(aes(x = factor(Sample, levels = c("S1", "S3")), y = Intensity)) +
+  geom_violin(linewidth = 0.5, color = "#555555")+
+  facet_grid(condition ~factor(percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
+  geom_errorbar(data = SE_sour %>% filter(Sample %in% c("S1", "S3")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), # remove grid lines
+        panel.grid.minor = element_blank(),
+        axis.title.x=element_blank(), # remove x title
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 12), # axis text size
+        axis.title.y = element_text(size = 12), # y axis title size
+        strip.background.y = element_blank(), #remove condition facet
+        strip.text.y = element_blank()) + # remove Condition facet 
+  scale_x_discrete(labels = c("Skim", "Whole", "Whole", "Whole")) +
+  labs(y = "Sourness Intensity")
+```
+
+```{r study4ClosedMilkRatingsViz, echo=FALSE, warning=FALSE, message=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). sourness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
+plot_grid(study4closedMilkRViz, study4closedMilkRatings + theme(strip.background.x = element_blank(), 
+        strip.text.x = element_blank()), ncol = 1)
+#may want to match the milk rindex viz to the ratings viz for consistency
+```
+```{r study4closedWaterRatings, echo=FALSE}
+study4closedWaterRatings <- brew5closedsour_ratings_trim %>% 
+  filter(Sample %in% c("S2", "S5", "S4", "S6")) %>% 
+  ggplot(aes(x = factor(Sample, levels = c("S2", "S5", "S4", "S6")), y = Intensity)) +
+  geom_violin(linewidth = 0.5, color = "#555555")+
+  facet_grid(condition ~factor(percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
+  geom_errorbar(data = SE_sour %>% filter(Sample %in% c("S2", "S5", "S4", "S6")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
+  geom_signif(data = compareW, # 4 v 6
+              y_position = 10.1 , xmin = 1, xmax = 2,
+              tip_length = 0,
+              annotation = c("< 0.01")) + 
+  geom_signif(data = compareX, # 2 v 17
+              y_position = 10.1, xmin = 3, xmax = 4,
+              tip_length = 0,
+              annotation = c("0.08")) +
+  geom_signif(data = compareY, # 10 v 12
+              y_position = 10.1 , xmin = 1, xmax = 2,
+              tip_length = 0,
+              annotation = c("< 0.001")) + 
+  geom_signif(data = compareZ, # 11 v 8
+              y_position = 10.1, xmin = 3, xmax = 4,
+              tip_length = 0,
+              annotation = c("0.001")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), # remove grid lines
+        panel.grid.minor = element_blank(),
+        axis.title.x=element_blank(), # remove x title
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 12), # axis text size
+        axis.title.y = element_text(size = 12), # y axis title size
+        strip.background.y = element_blank(), #remove condition facet
+        strip.text.y = element_blank()) + # remove Condition facet 
+  geom_vline(xintercept = 2.5) +
+  scale_x_discrete(labels = c("Skim", "Water", "Whole", "Water")) +
+  labs(y = "Sourness Intensity")
+```
+
+```{r study4ClosedWaterRatingsViz, echo=FALSE, warning=FALSE, message=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). sourness intensity ratings (from 0 - 5) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
+plot_grid(study4closedWaterRViz, study4closedWaterRatings + theme(strip.background.x = element_blank(), 
+        strip.text.x = element_blank()), ncol = 1)
+# unconvinced of removing facet labels on ratings viz
+```
+
+- Again, how does this compare to \@ref(fig:study2ClosedWaterRatingsViz)?  
+  + What are some explanations that the 8% whole milk addition wasn't distinguished?  
+
+## Nose Open Condition
+```{r study4open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
+brew5openedSour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 11)
+
+df5openedSour <- t(brew5openedSour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(df5openedSour, is.character)
+df5openedSour[ ,chars] <- as.data.frame(apply(df5openedSour[,chars],2, as.numeric))
+
+df5openedSour <- df5openedSour %>% rownames_to_column(var = "participant")
+```
+
+### R Index
+The R critical value for a 2-tailed test (milk comparisons) is: `r Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.05, 2)[2]`.  
+
+```{r study4opened rindex milks, echo=FALSE, include=FALSE}
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.05, 2)
+```
+```{r study4opened 8% milk, include=FALSE}
+df5openedSour %>% select(comparison_7_v_9_more_sour, confidence_9) %>% count(comparison_7_v_9_more_sour, confidence_9)
+Milk5S8OSour <- RIndex(7,7,4,3,5,8,length(df5openedSour$participant)) 
+```
+
+- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk5S8OSour)[1], 2)`, p < 0.01)  
+
+```{r study4opened 17% milk, include=FALSE}
+df5openedSour %>% select(comparison_1_v_3_more_sour, confidence_3) %>% count(comparison_1_v_3_more_sour, confidence_3)
+Milk5S17OSour <- RIndex(8,7,1,2,5,11,length(df5openedSour$participant))
+```
+
+- no discrimination seen between when 17% skim milk and 17% whole milk was added to coffee (R Index = `r round(as.numeric(Milk5S17OSour)[1], 2)`, p > 0.05)  
+
+```{r study4opened r wrangling milk, include=FALSE, echo=FALSE}
+Milk5ROpenSour <- tibble(
+  Sample = "sample",
+  Percent = factor(c("8% Addition", "17% Addition"),
+                   levels = c("8% Addition", "17% Addition")),
+  Condition = "Opened",
+  Rindex = c(as.numeric(v2d(Milk5S8OSour, along = 1)$V1), as.numeric(v2d(Milk5S17OSour, along = 1)$V1)),
+  Critical = as.numeric(Rcriti(length(brew5closedsour$participant), length(brew5closedsour$participant), 0.05, 2)[2]),
+  S.N = c((v2d(Milk5S8OSour, along = 1)$V2),
+             (v2d(Milk5S17OSour, along = 1)$V2)),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B22222",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888")))
+
+
+rcritical_5SourOpen <- Milk5ROpenSour %>% filter(Percent == "8% Addition")
+
+study4OpenMilkRViz <- Milk5ROpenSour %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Milk5ROpenSour$Sig, color = "black") +
+  facet_grid(~Percent) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  scale_x_discrete(labels = c("Skim/Whole", "Skim/Whole")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_text(data = rcritical_5SourOpen,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  coord_cartesian(ylim = c(.5, 1)) 
+```
+```{r study4OpenMilkRViz, echo=FALSE, warning=FALSE, message=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose open condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
+study4OpenMilkRViz
+```
+
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the sourness, therefore making the water sample the more sour. The critical value for a one tailed R-index calculation is `r Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.05, 1)[2]`.  
+
+```{r study4opened rindex water, echo=FALSE, include=FALSE}
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.05, 1)
+```
+
+```{r study4opened 8% water, include=FALSE}
+df5openedSour %>% select(comparison_8_v_11_more_sour, confidence_11) %>% count(comparison_8_v_11_more_sour, confidence_11)
+water5S8OSour <- RIndex(9,4,1,1,3,16,length(df5openedSour$participant))
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.01, 1)
+
+
+df5openedSour %>% select(comparison_10_v_12_more_sour, confidence_12) %>% count(comparison_10_v_12_more_sour, confidence_12)
+water5W8OSour <- RIndex(5,3,2,6,5,13,length(df5openedSour$participant))
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.001, 1)
+```
+
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water5S8OSour)[1], 2)`, 0.01 $\le$ p $\le$ 0.05)  
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r signif(as.numeric(water5W8OSour)[1], 3)`, p $\le$ 0.001)   
+
+```{r study4opened 17 water, include=FALSE}
+df5openedSour %>% select(comparison_2_v_5_more_sour, confidence_5) %>% count(comparison_2_v_5_more_sour, confidence_5)
+water5S17OSour <- RIndex(5,1,0,2,5,21,length(df5openedSour$participant))
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.001, 1)
+
+df5openedSour %>% select(comparison_4_v_6_more_sour, confidence_6) %>% count(comparison_4_v_6_more_sour, confidence_6)
+water5W17OSour <- RIndex(5,3,2,2,4,18,length(df5openedSour$participant))
+Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.001, 1)
+```
+
+- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water5S17OSour)[1], 2)`, p $\le$ 0.001)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water5W17OSour)[1], 2)`, p $\le$ 0.001)  
+
+```{r study4opened r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
+Water5ROpenedSour <- tibble(
+  Sample = factor(c(rep(c("S5", "S6"),2))),
+  Percent = factor(c(rep("8% Addition",2), rep("17% Addition",2)),
+                   levels = c("8% Addition", "17% Addition")),
+  Condition = "Opened",  
+  Rindex = c(as.numeric(v2d(water5S8OSour, along = 1)$V1),
+             as.numeric(v2d(water5W8OSour, along = 1)$V1),
+             as.numeric(v2d(water5S17OSour, along = 1)$V1),
+             as.numeric(v2d(water5W17OSour, along = 1)$V1)),
+  S.N = c((v2d(water5S8OSour, along = 1)$V2),
+             (v2d(water5W8OSour, along = 1)$V2),
+             (v2d(water5S17OSour, along = 1)$V2),
+             (v2d(water5W17OSour, along = 1)$V2)),
+  Critical = as.numeric(Rcriti(length(df5openedSour$participant), length(df5openedSour$participant), 0.05, 1)[2]),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B10102",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888"))
+  )
+
+compareAA <- Water5ROpenedSour %>% 
+  filter(Sig %in% "#B10102")
+
+rcritical_5WOpenedSour <- Water5ROpenedSour %>% filter(Percent == "8% Addition")
+
+study4openedWaterRViz <- Water5ROpenedSour %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Water5ROpenedSour$Sig, color = "black") +
+  facet_grid(~factor(Percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  scale_x_discrete(labels = c("Skim/Water", "Whole/Water", "Skim/Water", "Whole/Water")) +  
+  geom_signif(data = compareAA,
+              y_position = 0.95, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_signif(data = compareAA,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_text(data = rcritical_5WOpenedSour,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  geom_vline(xintercept = 1.5) +
+  coord_cartesian(ylim = c(.5, 1)) 
+```
+```{r study4OpenedWaterRViz, echo=FALSE, warning=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
+study4openedWaterRViz
+```
+
+- In the nose open condition, all samples were discriminated against the water sample.  
+
+### Ratings  
+```{r study4opened ratings wrangling, include=FALSE}
+df5openedSour_ratings <- df5openedSour %>% select(participant, starts_with("sourness"))
+
+df5openedSour_ratings_long <- df5openedSour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+
+sample_order <- c("sourness_1", "sourness_3", "sourness_2", "sourness_5", "sourness_4", "sourness_6", "sourness_7", "sourness_9", "sourness_8", "sourness_11", "sourness_10", "sourness_12")
+```
+
+```{r study4KableOpenRatings, echo=FALSE}
+kable(summarySE(df5openedSour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, sd, se) %>%  arrange(factor(Sample, levels = sample_order)),
+      caption = "sourness intensities, standard deviation, and standard error of cold brew coffee samples evaluated in nose opened condition. Each 2 rows represent the two samples presented in a paired comparison format.")
+# may want to learn how to create tables in LaTeX
+```
+
+
+```{r study4opened t-test, collapse = TRUE, comment=""}
+#| collapse = TRUE
+t.test(df5openedSour$sourness_7, df5openedSour$sourness_9, paired = TRUE, alternative = "two.sided") 
+t.test(df5openedSour$sourness_11, df5openedSour$sourness_8, paired = TRUE, alternative = "greater")
+t.test(df5openedSour$sourness_12, df5openedSour$sourness_10, paired = TRUE, alternative = "greater")
+
+t.test(df5openedSour$sourness_1, df5openedSour$sourness_3, paired = TRUE, alternative = "two.sided")
+t.test(df5openedSour$sourness_5, df5openedSour$sourness_2, paired = TRUE, alternative = "greater")
+t.test(df5openedSour$sourness_6, df5openedSour$sourness_4, paired = TRUE, alternative = "greater")
+```
+
+- no difference between 8% skim and whole milk (t = `r round(t.test(df5openedSour$sourness_7, df5openedSour$sourness_9, paired = TRUE, alternative = "two.sided")$statistic, 2)`, p = `r round(t.test(df5openedSour$sourness_7, df5openedSour$sourness_9, paired = TRUE, alternative = "two.sided")$p.value,2)`)
+- marginal reduction in sourness between 8% skim and 8% water ratings (t = `r round(t.test(df5openedSour$sourness_11, df5openedSour$sourness_9, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df5openedSour$sourness_11, df5openedSour$sourness_8, paired = TRUE, alternative = "greater")$p.value,4)`)  
+- significant reduction between 8% whole milk and 8% water ratings (t = `r round(t.test(df5openedSour$sourness_12, df5openedSour$sourness_10, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df5openedSour$sourness_12, df5openedSour$sourness_10, paired = TRUE, alternative = "greater")$p.value, 2)`)  
+
+- NSD between 17% skim and 17% whole milk ratings (t = `r round(t.test(df5openedSour$sourness_1, df5openedSour$sourness_3, paired = TRUE, alternative = "two.sided")$statistic,2)`, p = `r signif(t.test(df5openedSour$sourness_1, df5openedSour$sourness_3, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
+- significant reduction in sourness between 17% skim and 17% water ratings (t = `r round(t.test(df5openedSour$sourness_5, df5openedSour$sourness_2, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df5openedSour$sourness_5, df5openedSour$sourness_2, paired = TRUE, alternative = "greater")$p.value,2)`)  
+- significant reduction between 17% whole milk and 17% water ratings (t = `r round(t.test(df5openedSour$sourness_6, df5openedSour$sourness_4, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df5openedSour$sourness_6, df5openedSour$sourness_4, paired = TRUE, alternative = "greater")$p.value,2)`)  
+
+```{r study4opened viz wrangling, include=FALSE}
+df5openedSour_ratings_long2 <- df5openedSour_ratings_long
+length(df5openedSour$participant) # 34
+length(df5openedSour_ratings_long2$participant) # 408
+df5openedSour_ratings_long2$condition <- rep("opened", 408)
+df5openedSour_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 68) 
+df5openedSour_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 34)
+df5openedSour_ratings_long2$sample2 <- df5openedSour_ratings_long2$Sample
+
+df5openedSour_ratings_trim <- df5openedSour_ratings_long2 %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" =  "S6")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" =  "S6"))
+
+
+SE_sour_opened <- summarySE(df5openedSour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% 
+  select(Sample, Intensity, se) %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" =  "S6")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "S1")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "S3")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" =  "S2")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" =  "S5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" =  "S4")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" =  "S6"))
+  
+SE_sour_opened$percent <- c(rep("17% Addition", 6), rep("8% Addition", 6))
+
+kable(SE_sour_opened %>% arrange(percent, factor(Sample, levels = c("S1", "S3", "S2", "S5", "S4", "S6"))) %>% relocate(percent))
+
+compareAB <- df5openedSour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_11", "sourness_8"))
+compareAC <- df5openedSour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_12", "sourness_10"))
+compareAD <- df5openedSour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_2", "sourness_5"))
+compareAE <- df5openedSour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_4", "sourness_6"))
+  
+```
+
+```{r study4OpenedMilkRatings, echo=FALSE}
+study4OpenedMilkRatings <- df5openedSour_ratings_trim %>% 
+  filter(Sample %in% c("S1", "S3")) %>% 
+  ggplot(aes(x = factor(Sample, levels = c("S1", "S3")), y = Intensity)) +
+  geom_violin(linewidth = 0.5, color = "#555555")+
+  facet_grid(condition ~factor(percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
+  geom_errorbar(data = SE_sour_opened %>% filter(Sample %in% c("S1", "S3")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), # remove grid lines
+        panel.grid.minor = element_blank(),
+        axis.title.x=element_blank(), # remove x title
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 12), # axis text size
+        axis.title.y = element_text(size = 12), # y axis title size
+        strip.background.y = element_blank(), #remove condition facet
+        strip.text.y = element_blank()) + # remove Condition facet 
+  scale_x_discrete(labels = c("Skim", "Whole", "Whole", "Whole")) +
+  labs(y = "sourness Intensity")
+```
+
+```{r study4OpenedMilkRatingsViz, echo=FALSE, warning=FALSE, message=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). sourness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
+plot_grid(study4OpenMilkRViz, study4OpenedMilkRatings + theme(strip.background.x = element_blank(), 
+        strip.text.x = element_blank()), ncol = 1)
+```
+```{r study4OpenedWaterRatings, echo=FALSE}
+study4OpenedWaterRatings <- df5openedSour_ratings_trim %>% 
+  filter(Sample %in% c("S2", "S5", "S4", "S6")) %>% 
+  ggplot(aes(x = factor(Sample, levels = c("S2", "S5", "S4", "S6")), y = Intensity)) +
+  geom_violin(linewidth = 0.5, color = "#555555") +
+  facet_grid(condition ~factor(percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
+  stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
+  geom_errorbar(data = SE_sour_opened %>% filter(Sample %in% c("S2", "S5", "S4", "S6")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
+  geom_signif(data = compareAB,
+              y_position = 10.1 , xmin = 1, xmax = 2,
+              tip_length = 0,
+              annotation = c("0.07")) + 
+  geom_signif(data = compareAC, 
+              y_position = 10.1, xmin = 3, xmax = 4,
+              tip_length = 0,
+              annotation = c("0.006")) +
+  geom_signif(data = compareAD, 
+              y_position = 10.1 , xmin = 1, xmax = 2,
+              tip_length = 0,
+              annotation = c("< 0.001")) + 
+  geom_signif(data = compareAE, 
+              y_position = 10.1, xmin = 3, xmax = 4,
+              tip_length = 0,
+              annotation = c("0.0016")) +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), # remove grid lines
+        panel.grid.minor = element_blank(),
+        axis.title.x=element_blank(), # remove x title
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 12), # axis text size
+        axis.title.y = element_text(size = 12), # y axis title size
+        strip.background.y = element_blank(), #remove condition facet
+        strip.text.y = element_blank()) + # remove Condition facet 
+  geom_vline(xintercept = 2.5) +
+  scale_x_discrete(labels = c("Skim", "Water", "Whole", "Water")) +
+  labs(y = "sourness Intensity")
+```
+
+```{r study4OpenedWaterViZ, echo=FALSE, warning=FALSE, message=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). sourness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
+plot_grid(study4openedWaterRViz, study4OpenedWaterRatings + theme(strip.background.x = element_blank(), 
+        strip.text.x = element_blank()), ncol = 1)
+# unconvinced of removing facet labels on ratings viz
+```
+
+### Comparison of Conditions
+
+```{r study4Milk5Combine wrangling, include=FALSE}
+Milk5RCombine <- full_join(Milk5RSour, Milk5ROpenSour)
+
+Milk5RCombineViz <- Milk5RCombine %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Milk5RCombine$Sig, color = "black") +
+  facet_grid(Condition~Percent) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  scale_x_discrete(labels = c("Skim/Whole", "Skim/Whole")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_text(data = rcritical_5SourOpen,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+# Note 1-3-25: is this representative of both r-critical values?
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 5), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank()) +
+  coord_cartesian(ylim = c(.5, 1)) 
+```
+```{r study4MilkCombineRViz, echo=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed and nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample (‘Signal’) was significant; White bars indicate the milk sample (‘Noise’) was significant (p < 0.05)." 
+Milk5RCombineViz
+```
+
+
+```{r study4Water5RCombineViz wrangling, include=FALSE, warning=FALSE}
+Water5RCombineSour <- full_join(Water5RSour, Water5ROpenedSour)
+Water5RCombineSourViz <- Water5RCombineSour %>% 
+  ggplot(aes(x = Sample, y = Rindex)) +
+  geom_col(width = 0.5, fill = Water5RCombineSour$Sig, color = "black") +
+  facet_grid(Condition~factor(Percent, levels = c("8% Addition", "17% Addition"))) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  scale_x_discrete(labels = c("Skim/Water", "Whole/Water", "Skim/Water", "Whole/Water")) +  
+  geom_signif(data = compareU,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_signif(data = compareV,
+              y_position = 0.95, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_signif(data = compareAA,
+              y_position = 0.95, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_signif(data = compareAA,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.001")) +
+  geom_text(data = rcritical_5WOpenedSour,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 5), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank()) +
+  geom_vline(xintercept = 1.5) +
+  coord_cartesian(ylim = c(.5, 1))
+
+```
+```{r study4WaterCombineRViz, echo=FALSE, warning=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk, whole milk, and water at an 8% addition level and 17% addition level in a nose closed and nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample (‘Signal’) was significant; White bars indicate the milk sample (‘Noise’) was significant (p < 0.05)." 
+Water5RCombineSourViz
+```
+
+- Figure \@ref(fig:study4WaterCombineRViz) shows that the 8% whole milk addition to the cold brew coffee was only discriminated against in the nose open condition, while the remaining water-milk comparisons were discriminated against in the nose closed condition as well as the nose opened condition.  
+
+
+
