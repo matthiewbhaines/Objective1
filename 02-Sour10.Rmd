@@ -1,7 +1,29 @@
+---
+title: "Objective 1: Characterization"
+author: "Matthiew Haines"
+date: "`r Sys.Date()`"
+output: bookdown::html_document2()
+bibliography: [packages.bib, MyLibrary.bib]
+github-repo: matthiewbhaines/Objective1
+---
 # 1:10 Sourness {#Sour10}
-
+```{r study2bookdown, message=FALSE, warning=FALSE, include=FALSE}
+library(bookdown)
+```
 This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023 on sourness.  
 You can refer to the 1:10 Bitterness results [here](#Bitter10).  
+
+A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our hypotheses was:  
+
+> Milk will reduce the sourness of cold brew coffee more than water  
+
+This hypothesis is thought to be seen regardless of condition (nose closed or nose open). 
+
+Some interpretations of expected data would be:
+
+- In the nose closed condition a reduction in sourness from the milky coffee would suggest a physicochemical interaction between the milk and coffee  
+- Milk, being 86% water [@walstraDairyTechnologyPrinciples1999] could have a similar effect as water would when added to coffee   
+- In the nose opened condition, a reduction in sourness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
 
 ## Nose Closed Condition
 ```{r study2library, message=FALSE, warning=FALSE, include=FALSE}
@@ -15,23 +37,15 @@ library(agricolae) #LSD test
 library(janitor) #clean_names()
 library(tibble)
 
-# correlations
-library(Hmisc)
-
-# analysis
-library(sensR)
-
 #visualizations
 library(ggplot2) # plotting
 library(grid) # adjusting axes on plots
 library(ggsignif) #add signif to plots
 library(cowplot) #combining plots
 library(patchwork)
-library(gghighlight)
 library(knitr)
-library(ggpmisc)
-library(ggrepel)
 ```
+
 ```{r study2Rcriti, include=FALSE}
 # R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
 # It recreates a ROC (receiver operating characteristic) curve based on choice/confidence data.

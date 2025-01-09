@@ -1,4 +1,4 @@
---- 
+---
 title: "Objective 1: Characterization"
 author: "Matthiew Haines"
 date: "`r Sys.Date()`"
@@ -34,23 +34,14 @@ library(agricolae) #LSD test
 library(janitor) #clean_names()
 library(tibble)
 
-# correlations
-#library(Hmisc)
-
-# analysis
-#library(sensR)
-
 #visualizations
 library(ggplot2) # plotting
 library(grid) # adjusting axes on plots
 library(ggsignif) #add signif to plots
 library(cowplot) #combining plots
 library(patchwork)
-#library(gghighlight)
 library(knitr)
 library(bookdown)
-#library(ggpmisc)
-#library(ggrepel)
 ```
 ```{r study1Rcriti, include=FALSE}
 # R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
