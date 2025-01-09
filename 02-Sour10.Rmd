@@ -146,7 +146,7 @@ brew10closedsour <- brew10closedsour %>% rownames_to_column(var = "participant")
 
 ### R Index  
  
-The critical value for a 2-tailed test is `r round(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)[2],2)`.  
+The critical value for a 2-tailed test is **`r round(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)[2],2)`**.  
 
 ```{r study2closed rindex milks, echo=FALSE, include=FALSE}
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 2)
@@ -156,7 +156,7 @@ brew10closedsour %>% select(comparison_19_v_21_more_sour, confidence) %>% count(
 Milk10S8CSour <- RIndex(6,6,3,1,5,9,length(brew10closedsour$participant)) 
 ```
 
-- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8CSour)[1], 2)`, p > 0.05)  
+- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8CSour)[1], 2)`, p > 0.05)  
 
 ```{r study2closed 17% milk, include=FALSE}
 brew10closedsour %>% select(comparison_13_v_15_more_sour, confidence_15) %>% count(comparison_13_v_15_more_sour, confidence_15)
@@ -173,8 +173,11 @@ Milk10RSour <- tibble(
   Condition = "Closed",
   Rindex = c(as.numeric(v2d(Milk10S8CSour, along = 1)$V1), as.numeric(v2d(Milk10S17CSour, along = 1)$V1)),
   Critical = as.numeric(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 2)[2]),
-  Sig = ifelse(Rindex > Critical, "white", "#888888")
-)
+  S.N = c((v2d(Milk10S8CSour, along = 1)$V2), (v2d(Milk10S17CSour, along = 1)$V2)),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B22222",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888"))
+  )
 
 rcritical_10Sour <- Milk10RSour %>% filter(Percent == "8% Addition")
 
@@ -204,10 +207,9 @@ study2closedMilkRViz <- Milk10RSour %>%
 ```{r study2ClosedMilkRViz, echo=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
 study2closedMilkRViz
-# LaTeX is not supported in figure captions
 ```
 
-For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the sourness, therefore making the water sample the more sour. The critical value for a one tailed R-index calculation is `r round(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)[2], 2)`.  
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the sourness, therefore making the water sample the more sour. The critical value for a one tailed R-index calculation is **`r round(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)[2], 2)`**.  
 
 ```{r study2closed rindex water, echo=FALSE, include=FALSE}
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)
@@ -221,12 +223,11 @@ Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant
 brew10closedsour %>% select(comparison_22_v_24_more_sour, confidence_24) %>% count(comparison_22_v_24_more_sour, confidence_24)
 water10W8CSour <- RIndex(5,3,1,1,3,17,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
-
 ```
 
-- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8CSour)[1], 2)`, p $\le$ 0.001)  
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8CSour)[1], 2)`, p $\le$ **0.001**)  
 
-- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10W8CSour)[1], 2)`, p $\le$ 0.001)   
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10W8CSour)[1], 2)`, p $\le$ **0.001**)   
 
 ```{r study2closed 17 water, include=FALSE}
 brew10closedsour %>% select(comparison_14_v_17_more_sour, confidence_17) %>% count(comparison_14_v_17_more_sour, confidence_17)
@@ -238,8 +239,8 @@ water10W17CSour <- RIndex(3,2,2,0,1,22,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
 ```
 
-- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water10S17CSour)[1], 2)`, p $\le$ 0.001)  
-- discrimination between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17CSour)[1], 2)`, p $\le$ 0.001)  
+- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water10S17CSour)[1], 2)`, p $\le$ **0.001**)  
+- discrimination between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17CSour)[1], 2)`, p $\le$ **0.001**)  
 
 ```{r study2closed r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
 Water10RSour <- tibble(
@@ -318,38 +319,42 @@ sample_order <- c("sourness_13", "sourness_15", "sourness_14", "sourness_17", "s
 ```
 
 ```{r study2KableClosedRatings, echo=FALSE}
-kable(summarySE(brew10closedsour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, sd, se) %>%  arrange(factor(Sample, levels = sample_order)),
-      caption = "sourness intensities, standard deviation, and standard error of cold brew coffee samples. Each 2 rows represent the two samples presented in a paired comparison format.")
+kable(summarySE(brew10closedsour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, se) %>%  arrange(factor(Sample, levels = sample_order)),
+      caption = "sourness intensities and standard error of cold brew coffee samples. Each 2 rows represent the two samples presented in a paired comparison format.")
 # may want to learn how to create tables in LaTeX
 ```
 
 ```{r study2notes, include=FALSE, eval=FALSE}
-0.05/6 #Bonferroni corrected p
+0.05/3 #Bonferroni corrected p
 # use $statistic to print t-value
 # use $p.value to print p value
-# is the Bonferroni correction0.05/6 (total comparisons) or 0.05/3 (comparisons within a percent block)
 ```
 
-The Bonferroni corrected $\alpha$ would be `r round(0.05/6, 4)`.
+The Bonferroni corrected $\alpha$ would be `r round(0.05/3, 4)`.
 
 ```{r study2closed t-test, collapse=TRUE, comment=""}
-#| collapse = TRUE
-t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, paired = TRUE, alternative = "two.sided") 
-t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")
-t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")
+t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, 
+       paired = TRUE, alternative = "two.sided") 
+t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, 
+paired = TRUE, alternative = "greater") #*
+t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, 
+       paired = TRUE, alternative = "greater") #NS w/ Bonferroni
 
-t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, paired = TRUE, alternative = "two.sided")
-t.test(brew10closedsour$sourness_17, brew10closedsour$sourness_14, paired = TRUE, alternative = "greater")
-t.test(brew10closedsour$sourness_18, brew10closedsour$sourness_16, paired = TRUE, alternative = "greater")
+t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, 
+       paired = TRUE, alternative = "two.sided")
+t.test(brew10closedsour$sourness_17, brew10closedsour$sourness_14, 
+paired = TRUE, alternative = "greater") #*
+t.test(brew10closedsour$sourness_18, brew10closedsour$sourness_16, 
+paired = TRUE, alternative = "greater") #*
 ```
 
-- no significant difference in ratings between the 8% skim milk and 8% whole milk comparison (t = `r round(t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, paired = TRUE, alternative = "two.sided")$p.value, 3)`)    
-- Ratings between the 8% skim milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$p.value,2)`)  
-- Ratings between the 8% whole milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")$p.value,2)`)  
+- Ratings between the 8% skim milk and 8% whole milk were NSD (t = `r round(t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_19, brew10closedsour$sourness_21, paired = TRUE, alternative = "two.sided")$p.value, 3)`)    
+- Ratings between the 8% skim milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$statistic, 3)`, p = **`r signif(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$p.value,2)`**)  
+- Ratings between the 8% whole milk and 8% water were NSD (t = `r round(t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")$p.value,2)`)  
 
--  no significant difference in ratings between the 17% skim milk and 8% whole milk comparison (t = `r round(t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
-- Ratings between the 17% skim milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_17, brew10closedsour$sourness_14, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$p.value,2)`)  
-- Ratings between the 17% whole milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_18, brew10closedsour$sourness_16, paired = TRUE, alternative = "greater")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_24, brew10closedsour$sourness_22, paired = TRUE, alternative = "greater")$p.value,2)`) 
+-  Ratings between the 17% skim milk and 17% whole milk were NSD (t = `r round(t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, paired = TRUE, alternative = "two.sided")$statistic, 3)`, p = `r round(t.test(brew10closedsour$sourness_13, brew10closedsour$sourness_15, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
+- Ratings between the 17% skim milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_17, brew10closedsour$sourness_14, paired = TRUE, alternative = "greater")$statistic, 3)`, p = **`r signif(t.test(brew10closedsour$sourness_17, brew10closedsour$sourness_14, paired = TRUE, alternative = "greater")$p.value,2)`**)  
+- Ratings between the 17% whole milk and 8% water were significantly different (t = `r round(t.test(brew10closedsour$sourness_18, brew10closedsour$sourness_16, paired = TRUE, alternative = "greater")$statistic, 3)`, p = **`r signif(t.test(brew10closedsour$sourness_18, brew10closedsour$sourness_16, paired = TRUE, alternative = "greater")$p.value,2)`**) 
 
 ```{r study2closed viz wrangling, include=FALSE}
 brew10closedsour_ratings_long2 <- brew10closedsour_ratings_long
@@ -394,13 +399,12 @@ SE_sour$percent <- c(rep("17% Addition", 6), rep("8% Addition", 6))
 
 kable(SE_sour %>% arrange(percent, factor(Sample, levels = c("S13", "S15", "S14", "S17", "S16", "S18"))) %>% relocate(percent))
 
-compareF <- brew10closedsour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_16", "sourness_18"))
-  
+ compareF <- brew10closedsour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_16", "sourness_18"))
 compareG <- brew10closedsour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_14", "sourness_17"))
+#compareH <- brew10closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_24", "sourness_22"))
+# not sig w/ bonferroni
 
-compareH <- brew10closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_24", "sourness_22"))
-
-compareI <- brew10closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_23", "sourness_20"))
+compareI <- brew10closedsour_ratings_trim %>% filter(percent == "8% Addition" & sample2 %in% c("sourness_23", "sourness_20")) 
 
 
 ```
@@ -433,6 +437,7 @@ plot_grid(study2closedMilkRViz, study2closedMilkRatings + theme(strip.background
         strip.text.x = element_blank()), ncol = 1)
 #may want to match the milk rindex viz to the ratings viz for consistency
 ```
+
 ```{r study2closedWaterRatings, echo=FALSE}
 study2closedWaterRatings <- brew10closedsour_ratings_trim %>% 
   filter(Sample %in% c("S14", "S17", "S16", "S18")) %>% 
@@ -442,22 +447,13 @@ study2closedWaterRatings <- brew10closedsour_ratings_trim %>%
   scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
   stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
   geom_errorbar(data = SE_sour %>% filter(Sample %in% c("S14", "S17", "S16", "S18")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
-  geom_signif(data = compareF, # 16 v 18
-              y_position = 10.1 , xmin = 1, xmax = 2,
-              tip_length = 0,
-              annotation = c("< 0.001")) + 
-  geom_signif(data = compareG, # 14 v 17
-              y_position = 10.1, xmin = 3, xmax = 4,
+  geom_signif(data = compareF, y_position = 10.1 , xmin = 3, xmax = 4, tip_length = 0, annotation = c("< 0.001")) + # 16 v 18
+  geom_signif(data = compareG, y_position = 10.1, xmin = 1, xmax = 2, tip_length = 0, annotation = c("< 0.001")) +
+#  geom_signif(data = compareH, y_position = 10.1 , xmin = 1, xmax = 2, tip_length = 0, annotation = c("< 0.001")) + 
+  geom_signif(data = compareI, # 23 v 20
+              y_position = 10.1, xmin = 1, xmax = 2,
               tip_length = 0,
               annotation = c("< 0.001")) +
-  geom_signif(data = compareH, # 22 v 24
-              y_position = 10.1 , xmin = 1, xmax = 2,
-              tip_length = 0,
-              annotation = c("< 0.001")) + 
-  geom_signif(data = compareI, # 23 v 20
-              y_position = 10.1, xmin = 3, xmax = 4,
-              tip_length = 0,
-              annotation = c("0.04")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), # remove grid lines
         panel.grid.minor = element_blank(),
@@ -481,6 +477,7 @@ plot_grid(study2closedWaterRViz, study2closedWaterRatings + theme(strip.backgrou
 
 - no discrimination of sourness between comparisons of skim milk and whole milk (see Figure \@ref(fig:study2ClosedMilkRatingsViz))  
 - discrimination seen between when water and milk was added to the cold brew (see Figure \@ref(fig:study2ClosedWaterRatingsViz))
+  + the R index analysis showed discrimination, however only the ratings in the 8% skim milk v. water comparison were significant, p = **`r round(t.test(brew10closedsour$sourness_23, brew10closedsour$sourness_20, paired = TRUE, alternative = "greater")$p.value, 4)`**
 
 ## Nose Open Condition
 ```{r study2open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
@@ -494,7 +491,7 @@ df10openedSour <- df10openedSour %>% rownames_to_column(var = "participant")
 ```
 
 ### R Index
-The R critical value for a 2-tailed test (milk comparisons) is: `r Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.05, 2)[2]`.  
+The R critical value for a 2-tailed test (milk comparisons) is: **`r Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.05, 2)[2]`**.  
 
 ```{r study2opened rindex milks, echo=FALSE, include=FALSE}
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.05, 2)
@@ -505,7 +502,7 @@ Milk10S8OSour <- RIndex(12,8,2,3,4,5,length(df10openedSour$participant))
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.01, 2)
 ```
 
-- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8OSour)[1], 2)`, p < 0.01)  
+- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8OSour)[1], 2)`, p < **0.01**)  
     + interestingly, the skim milk sample (the "noise") was chosen more frequently than the whole milk sample (the "signal"): `r as.numeric(df10openedSour %>% count(comparison_19_v_21_more_sour) %>% select(n) %>% slice(1L))`/`r length(df10openedSour$participant)`
 
 ```{r study2opened 17% milk, include=FALSE}
@@ -523,8 +520,11 @@ Milk10ROpenSour <- tibble(
   Condition = "Opened",
   Rindex = c(as.numeric(v2d(Milk10S8OSour, along = 1)$V1), as.numeric(v2d(Milk10S17OSour, along = 1)$V1)),
   Critical = as.numeric(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 2)[2]),
-  Sig = ifelse(Rindex > Critical, "white", "#888888")
-)
+  S.N = c((v2d(Milk10S8OSour, along = 1)$V2), (v2d(Milk10S17OSour, along = 1)$V2)),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B22222",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888"))
+  )
 
 rcritical_10SourOpen <- Milk10ROpenSour %>% filter(Percent == "8% Addition")
 
@@ -568,7 +568,7 @@ Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0
 
 ```{r study2opened 8% water, include=FALSE}
 df10openedSour %>% select(comparison_20_v_23_more_sour, confidence_23) %>% count(comparison_20_v_23_more_sour, confidence_23)
-water10S8OSour <- RIndex(3,7,2,2,3,19,length(df10openedSour$participant))
+water10S8OSour <- RIndex(3,7,1,1,3,19,length(df10openedSour$participant))
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.001, 1)
 
 
@@ -577,8 +577,8 @@ water10W8OSour <- RIndex(4,4,2,1,7,16,length(df10openedSour$participant))
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.001, 1)
 ```
 
-- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8OSour)[1], 2)`, p $\le$ 0.001)  
-- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r signif(as.numeric(water10W8OSour)[1], 3)`, p $\le$ 0.001)   
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8OSour)[1], 2)`, p $\le$ **0.001**)  
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r signif(as.numeric(water10W8OSour)[1], 3)`, p $\le$ **0.001**)   
 
 ```{r study2opened 17 water, include=FALSE}
 df10openedSour %>% select(comparison_14_v_17_more_sour, confidence_17) %>% count(comparison_14_v_17_more_sour, confidence_17)
@@ -590,8 +590,8 @@ water10W17OSour <- RIndex(4,2,1,1,6,20,length(df10openedSour$participant))
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.001, 1)
 ```
 
-- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water10S17OSour)[1], 2)`, p $\le$ 0.001)  
-- discrimination seen between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17OSour)[1], 2)`, p $\le$ 0.001)  
+- discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water10S17OSour)[1], 2)`, p $\le$ **0.001**)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17OSour)[1], 2)`, p $\le$ **0.001**)  
 
 ```{r study2opened r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
 Water10ROpenedSour <- tibble(
@@ -651,6 +651,7 @@ study2openedWaterRViz <- Water10ROpenedSour %>%
 ```{r study2OpenedWaterRViz, echo=FALSE, warning=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
 study2openedWaterRViz
+# Warning: see study1OpenedWaterRViz
 ```
 
 - In the nose open condition, all samples were discriminated against the water sample.  
@@ -662,34 +663,38 @@ df10openedSour_ratings <- df10openedSour %>% select(participant, starts_with("so
 df10openedSour_ratings_long <- df10openedSour_ratings %>% 
   pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
 
-sample_order <- c("sourness_13", "sourness_15", "sourness_14", "sourness_17", "sourness_16", "sourness_18", "sourness_19", "sourness_21", "sourness_20", "sourness_23", "sourness_22", "sourness_24")
+sample_order10S <- c("sourness_13", "sourness_15", "sourness_14", "sourness_17", "sourness_16", "sourness_18", "sourness_19", "sourness_21", "sourness_20", "sourness_23", "sourness_22", "sourness_24")
 ```
 
 ```{r study2KableOpenRatings, echo=FALSE}
-kable(summarySE(df10openedSour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, sd, se) %>%  arrange(factor(Sample, levels = sample_order)),
-      caption = "sourness intensities, standard deviation, and standard error of cold brew coffee samples evaluated in nose opened condition. Each 2 rows represent the two samples presented in a paired comparison format.")
-# may want to learn how to create tables in LaTeX
+kable(summarySE(df10openedSour_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, se) %>%  arrange(factor(Sample, levels = sample_order)),
+      caption = "sourness intensities and standard error of cold brew coffee samples evaluated in nose opened condition. Each 2 rows represent the two samples presented in a paired comparison format.")
 ```
 
 
 ```{r study2opened t-test, collapse = TRUE, comment=""}
-#| collapse = TRUE
-t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, paired = TRUE, alternative = "two.sided") 
-t.test(df10openedSour$sourness_23, df10openedSour$sourness_20, paired = TRUE, alternative = "greater")
-t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, paired = TRUE, alternative = "greater")
+t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, 
+       paired = TRUE, alternative = "two.sided") 
+t.test(df10openedSour$sourness_23, df10openedSour$sourness_20, 
+paired = TRUE, alternative = "greater") #*
+t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, 
+paired = TRUE, alternative = "greater") #*
 
-t.test(df10openedSour$sourness_13, df10openedSour$sourness_15, paired = TRUE, alternative = "two.sided")
-t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, paired = TRUE, alternative = "greater")
-t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, paired = TRUE, alternative = "greater")
+t.test(df10openedSour$sourness_13, df10openedSour$sourness_15, 
+       paired = TRUE, alternative = "two.sided")
+t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, 
+paired = TRUE, alternative = "greater") #*
+t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, 
+paired = TRUE, alternative = "greater") #*
 ```
 
-- marginal difference between 8% skim and whole milk (t = `r round(t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, paired = TRUE, alternative = "two.sided")$statistic, 2)`, p = `r round(t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, paired = TRUE, alternative = "two.sided")$p.value,2)`)
-- significant reduction in sourness between 8% skim and 8% water ratings (t = `r round(t.test(df10openedSour$sourness_23, df10openedSour$sourness_21, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df10openedSour$sourness_23, df10openedSour$sourness_20, paired = TRUE, alternative = "greater")$p.value,2)`)  
-- significant reduction between 8% whole milk and 8% water ratings (t = `r round(t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, paired = TRUE, alternative = "greater")$p.value, 2)`)  
+- NSD between 8% skim and whole milk (t = `r round(t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, paired = TRUE, alternative = "two.sided")$statistic, 2)`, p = `r round(t.test(df10openedSour$sourness_19, df10openedSour$sourness_21, paired = TRUE, alternative = "two.sided")$p.value,2)`)
+- significant reduction in sourness between 8% skim and 8% water ratings (t = `r round(t.test(df10openedSour$sourness_23, df10openedSour$sourness_21, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10openedSour$sourness_23, df10openedSour$sourness_20, paired = TRUE, alternative = "greater")$p.value,2)`**)  
+- significant reduction between 8% whole milk and 8% water ratings (t = `r round(t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10openedSour$sourness_24, df10openedSour$sourness_22, paired = TRUE, alternative = "greater")$p.value, 2)`**)  
 
 - NSD between 17% skim and 17% whole milk ratings (t = `r round(t.test(df10openedSour$sourness_13, df10openedSour$sourness_15, paired = TRUE, alternative = "two.sided")$statistic,2)`, p = `r signif(t.test(df10openedSour$sourness_13, df10openedSour$sourness_15, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
-- significant reduction in sourness between 17% skim and 17% water ratings (t = `r round(t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, paired = TRUE, alternative = "greater")$p.value,2)`)  
-- significant reduction between 17% whole milk and 17% water ratings (t = `r round(t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, paired = TRUE, alternative = "greater")$p.value,2)`)  
+- significant reduction in sourness between 17% skim and 17% water ratings (t = `r round(t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10openedSour$sourness_17, df10openedSour$sourness_14, paired = TRUE, alternative = "greater")$p.value,2)`**)  
+- significant reduction between 17% whole milk and 17% water ratings (t = `r round(t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10openedSour$sourness_18, df10openedSour$sourness_16, paired = TRUE, alternative = "greater")$p.value,2)`**)  
 
 ```{r study2opened viz wrangling, include=FALSE}
 df10openedSour_ratings_long2 <- df10openedSour_ratings_long
@@ -734,7 +739,7 @@ SE_sour_opened$percent <- c(rep("17% Addition", 6), rep("8% Addition", 6))
 
 kable(SE_sour_opened %>% arrange(percent, factor(Sample, levels = c("S13", "S15", "S14", "S17", "S16", "S18"))) %>% relocate(percent))
 
-compareL <- df10openedSour_ratings_trim %>% filter(sample2 %in% c("sourness_19", "sourness_21"))
+#compareL <- df10openedSour_ratings_trim %>% filter(sample2 %in% c("sourness_19", "sourness_21"))
 
 compareM <- df10openedSour_ratings_trim %>% filter(percent == "17% Addition" & sample2 %in% c("sourness_16", "sourness_18"))
   
@@ -754,10 +759,7 @@ study2OpenedMilkRatings <- df10openedSour_ratings_trim %>%
   scale_y_continuous(expand = expansion(mult = c(0, 0.08)), limits = c(0,10.3)) +
   stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
   geom_errorbar(data = SE_sour_opened %>% filter(Sample %in% c("S13", "S15")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
-  geom_signif(data = compareL,
-              y_position = 10.1, xmin = 1, xmax = 2,
-              tip_length = 0,
-              annotation = c("0.06")) +
+  #geom_signif(data = compareL, y_position = 10.1, xmin = 1, xmax = 2, tip_length = 0, annotation = c("0.06")) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), # remove grid lines
         panel.grid.minor = element_blank(),
@@ -776,6 +778,7 @@ study2OpenedMilkRatings <- df10openedSour_ratings_trim %>%
 plot_grid(study2OpenMilkRViz, study2OpenedMilkRatings + theme(strip.background.x = element_blank(), 
         strip.text.x = element_blank()), ncol = 1)
 ```
+
 ```{r study2OpenedWaterRatings, echo=FALSE}
 study2OpenedWaterRatings <- df10openedSour_ratings_trim %>% 
   filter(Sample %in% c("S14", "S17", "S16", "S18")) %>% 
@@ -786,19 +789,19 @@ study2OpenedWaterRatings <- df10openedSour_ratings_trim %>%
   stat_summary(fun = mean, geom = "point", shape = 19, size = 2, color = "black") +
   geom_errorbar(data = SE_sour_opened %>% filter(Sample %in% c("S14", "S17", "S16", "S18")), aes(ymin = Intensity-se, ymax = Intensity+se), width = 0.2) +
   geom_signif(data = compareM, # 16 v 18
-              y_position = 10.1 , xmin = 1, xmax = 2,
+              y_position = 10.1 , xmin = 3, xmax = 4,
               tip_length = 0,
               annotation = c("< 0.001")) + 
   geom_signif(data = compareN, # 14 v 17
-              y_position = 10.1, xmin = 3, xmax = 4,
+              y_position = 10.1, xmin = 1, xmax = 2,
               tip_length = 0,
               annotation = c("0.003")) +
   geom_signif(data = compareO, # 22 v 24
-              y_position = 10.1 , xmin = 1, xmax = 2,
+              y_position = 10.1 , xmin = 3, xmax = 4,
               tip_length = 0,
               annotation = c("0.006")) + 
   geom_signif(data = compareP, # 23 v 20
-              y_position = 10.1, xmin = 3, xmax = 4,
+              y_position = 10.1, xmin = 1, xmax = 2,
               tip_length = 0,
               annotation = c("0.008")) +
   theme_bw() +
@@ -820,9 +823,10 @@ study2OpenedWaterRatings <- df10openedSour_ratings_trim %>%
 plot_grid(study2openedWaterRViz, study2OpenedWaterRatings + theme(strip.background.x = element_blank(), 
         strip.text.x = element_blank()), ncol = 1)
 # unconvinced of removing facet labels on ratings viz
+# Warning: see study1OpenedWaterRViz
 ```
 
-### Comparison of Conditions
+## Comparison of Conditions
 
 ```{r study2Milk10Combine wrangling, include=FALSE}
 Milk10RCombine <- full_join(Milk10RSour, Milk10ROpenSour)
@@ -855,10 +859,6 @@ Milk10RCombineViz <- Milk10RCombine %>%
 #| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed and nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on sourness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample (‘Signal’) was significant; White bars indicate the milk sample (‘Noise’) was significant (p < 0.05)." 
 Milk10RCombineViz
 ```
-
-- Figure \@ref(fig:study2MilkCombineRViz), where the 8% skim milk sample was discriminated against the 8% whole milk sample in the nose closed condition only presents an interesting piece to this puzzle.  
-    + @keastModificationBitternessCaffeine2008 suggested that skim milk would reduce the sourness of caffeine more than whole milk  
-    + @bennettUsingMilkFat2012 found that whole milk reduced the sourness of ibuprofen marginally compared to skim milk (p = 0.1), but not compared to half-and-half  
 
 ```{r study2Water10RCombineViz wrangling, include=FALSE, warning=FALSE}
 Water10RCombineSour <- full_join(Water10RSour, Water10ROpenedSour)
@@ -899,5 +899,10 @@ Water10RCombineSourViz
 - Neither of these effects are seen in the nose opened condition
     + this data does not look at the possibility of removing panelists in the nose closed condition that responded that they were not regular coffee drinkers in the demographic questions. It may be of interest to see how/if the data changes when removing them (or segmenting them).  
 
+## Notes {-}
+<input type="checkbox"> examine the participant data  
+  - do panelists need to be excluded because they do not meet inclusion criteria?  
+<input type="checkbox"> update Rindex figures like Chris described  
+<input type="checkbox"> resolve `warnings()`?
 
-
+## References {-}
