@@ -1,3 +1,19 @@
+--- 
+title: "Objective 1: Characterization"
+author: "Matthiew Haines"
+date: "`r Sys.Date()`"
+output: bookdown::html_document2()
+#site: bookdown::gitbook
+#documentclass: book
+bibliography: [packages.bib, MyLibrary.bib]
+description: |
+  This is a minimal example of using the bookdown package to write a book.
+  The HTML output format for this example is bookdown::gitbook,
+  set in the _output.yml file.
+link-citations: yes
+github-repo: matthiewbhaines/Objective1
+---
+
 # 1:10 Bitterness {#Bitter10}
 
 This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023.  
@@ -40,6 +56,7 @@ library(cowplot) #combining plots
 library(patchwork)
 #library(gghighlight)
 library(knitr)
+library(bookdown)
 #library(ggpmisc)
 #library(ggrepel)
 ```
