@@ -2,15 +2,17 @@
 
 This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023.  
 
-A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our ~~**hypotheses**~~ (note 12-24-24: the following were not hypotheses, they are *interpretations*) were as follows:  
+A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our hypotheses was:  
+
+> milk will reduce the bitterness of cold brew coffee more than water  
+
+This hypothesis is thought to be seen regardless of condition (nose closed or nose open). 
+
+Some interpretations of expected data would be:
 
 - In the nose closed condition a reduction in bitterness from the milky coffee would suggest a physicochemical interaction between the milk and coffee  
 - Milk, being 86% water [@walstraDairyTechnologyPrinciples1999] could have a similar effect as water would when added to coffee   
 - In the nose opened condition, a reduction in bitterness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
-
-> Note 12-24-24: We had initially hypothesized that there would be a physicochemical interaction (such as protein-polyphenol interaction)  
-
-Note 01-06-25: I think the hypothesis was that the addition of milk would reduce the bitterness of cold brew coffee.  
 
 ## Nose Closed Condition
 ```{r study1library, message=FALSE, warning=FALSE, include=FALSE}
@@ -25,10 +27,10 @@ library(janitor) #clean_names()
 library(tibble)
 
 # correlations
-library(Hmisc)
+#library(Hmisc)
 
 # analysis
-library(sensR)
+#library(sensR)
 
 #visualizations
 library(ggplot2) # plotting
@@ -36,10 +38,10 @@ library(grid) # adjusting axes on plots
 library(ggsignif) #add signif to plots
 library(cowplot) #combining plots
 library(patchwork)
-library(gghighlight)
+#library(gghighlight)
 library(knitr)
-library(ggpmisc)
-library(ggrepel)
+#library(ggpmisc)
+#library(ggrepel)
 ```
 ```{r study1Rcriti, include=FALSE}
 # R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
@@ -141,7 +143,8 @@ df10closed <- df10closed %>% rownames_to_column(var = "participant")
 
 ### R Index  
 In the paired comparisons between when skim milk or whole milk was added to the coffee, there is not enough evidence to suggest one will reduce the bitterness more than the other [cf. @keastModificationBitternessCaffeine2008].  
-The critical value for a 2-tailed test is `r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2],2)`.  
+
+The critical value for a 2-tailed test is **`r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2],2)`**.  
 ```{r study1closed rindex milks, echo=FALSE, include=FALSE}
 Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 2)
 ```
@@ -158,9 +161,10 @@ Rcriti(length(df10closed$participant), length(df10closed$participant), 0.01, 2)
 ```{r study1closed 17% milk, include=FALSE}
 df10closed %>% select(comparison_13_v_15_more_bitter, confidence_15) %>% count(comparison_13_v_15_more_bitter, confidence_15)
 Milk10S17C <- RIndex(9,4,0,0,4,13,length(df10closed$participant))
+# Note 01092025: there may be a way to go from the tibble produced in line 162 to outputting the Rindex with p-value as in line 163
 ```
 
-- no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = `r round(as.numeric(Milk10S17C)[1], 2)`, p > 0.05)  
+- no discrimination between 17% skim milk or 17% whole milk added to coffee (R Index = `r round(as.numeric(Milk10S17C)[1], 2)`, p > 0.05)  
 
 ```{r study1closed r wrangling milk, include=FALSE}
 Milk10R <- tibble(
@@ -170,8 +174,11 @@ Milk10R <- tibble(
   Condition = "Closed",
   Rindex = c(as.numeric(v2d(Milk10S8C, along = 1)$V1), as.numeric(v2d(Milk10S17C, along = 1)$V1)),
   Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 2)[2]),
-  Sig = ifelse(Rindex > Critical, "white", "#888888")
-)
+  S.N = c((v2d(Milk10S8C, along = 1)$V2), (v2d(Milk10S17C, along = 1)$V2)),
+  Sig = ifelse(Rindex > Critical & S.N == "Signal", "#B22222",
+               ifelse(Rindex > Critical & S.N == "Noise", "white",
+                      "#888888"))
+  )
 
 compareA <- Milk10R %>% 
   filter(Sig %in% "white")
@@ -203,7 +210,7 @@ study1closedMilkRViz <- Milk10R %>%
         strip.background.y = element_blank(),
         strip.text.y = element_blank()) +
   coord_cartesian(ylim = c(.5, 1)) 
-
+#Note 01092025: Chris mentioned you could also present the Rindex graphs with the y-axis set at 50%, s.t. Rindex > 50% are above the line, Rindex < 50% are below the line
 ```
 ```{r study1ClosedMilkRViz, echo=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05)."
@@ -211,7 +218,7 @@ study1closedMilkRViz
 # LaTeX is not supported in figure captions
 ```
 
-For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter. The critical value for a one tailed R-index calculation is `r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2], 2)`.  
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter sample. The critical value for a one tailed R-index calculation is **`r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2], 2)`**.  
 ```{r study1closed rindex water, echo=FALSE, include=FALSE}
 Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)
 ```
@@ -306,12 +313,13 @@ study1closedWaterRViz
 ```
 
 - Interestingly, only comparisons at the 8% addition level reached significance
-    + the skim milk sample was chosen as more bitter compared to the whole milk sample
-    + the skim milk sample was chosen as more bitter compared to the water sample
-    + the water sample was chosen as more bitter compared to the whole milk sample
+    + the skim milk sample was chosen as more bitter compared to the whole milk sample (Figure @\ref(fig:study1ClosedMilkRViz))  
+    + the skim milk sample was chosen as more bitter compared to the water sample (Figure @\ref(fig:study1ClosedWaterRViz), white bar)
+    + the water sample was chosen as more bitter compared to the whole milk sample (Figure @\ref(fig:study1ClosedWaterRViz), red bar)
     
 - This is somewhat counter intuitive to what we had hypothesized, as adding more milk (the 17% samples) should have also shown discrimination  
     + what are alternative interpretations/explanations?
+      + *01092025*: could fat be creating an inhibitive coating on the tongue where bitter compounds can't connect to the receptors?
 
 ### Ratings  
 The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
