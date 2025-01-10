@@ -1,0 +1,93 @@
+---
+title: "Latex Tables Example"
+author: "Matthiew Haines"
+date: "2025-01-10"
+output:
+  html_document: default
+---
+
+How to create tables using this [link](https://www.overleaf.com/learn/latex/Tables#Creating_a_simple_table_in_LaTeX).
+
+```{r library}
+library(tinytex)
+library(bookdown)
+library(knitr)
+library(tables)
+```
+
+Creating a simple table:\
+From [bookdown](https://bookdown.org/yihui/bookdown/markdown-syntax.html#), use `\begin{array}` not `\begin{table}`
+
+Simple table from bookdown: $$\begin{array}{ccc}
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}$$
+
+Includes `\hline{}`: $$\begin{array}
+cell_1 & cell_2 & cell_3\\
+\hline
+cell_7 & cell_8 & cell_9
+\end{array}$$
+
+Includes `{l|c|r}` column formatting and `\textbf{}`: $$\begin{array}{l|c|r}
+  \textbf{V1} & \textbf{V2} & \textbf{V3}\\
+  \hline
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}$$
+
+Add `\centering{}`: $$\begin{array}
+\centering
+\hline
+\textbf{V1} & \textbf{V2} & \textbf{V3}\\
+\hline
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}$$
+
+`\label{}` does not work. `\table{}` and `\tabular{}` do not work.
+
+$$\begin{table}
+\centering
+\begin{array}
+\hline
+\textbf{V1} & \textbf{V2} & \textbf{V3}\\
+\hline
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}
+\end{table}$$
+
+You can put the array in a chunk surrounded by `$$` (at least in HTML): 
+$$
+\begin{array}
+\hline
+\textbf{V1} & \textbf{V2} & \textbf{V3}\\
+\hline
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}
+$$
+Use `|` to indicate vertical lines in the table (do this like `\begin{array}{c|cc}`):
+$$
+\begin{array}{c|cc}
+\textbf{V1} & \textbf{V2} & \textbf{V3}\\
+\hline
+cell_1 & cell_2 & cell_3\\
+cell_7 & cell_8 & cell_9
+\end{array}
+$$
+
+**[stackoverflow](https://stackoverflow.com/questions/58381667/how-to-setup-tables-in-rmarkdown-using-tabular)**, `\captionof{table}` and `\begin{center}` do not work:
+$$\begin{array}{l|l|l}
+\hline
+\textbf{V1} & \textbf{V2} & \textbf{V3} \\
+\hline
+1 & 2 & 3 \\
+x1 & x2 & x3 \\
+x_{1} & x_{2} & x_{3} \\
+\hline
+\end{array}$$
+
+another [**stackoverflow**](https://stackoverflow.com/questions/47319910/make-table-in-r-markdown-using-tabular-and-booktabs?rq=3) - look into using `tables` package or `kableExtra()`
+[`tables` documentation](https://dmurdoch.github.io/tables/)
