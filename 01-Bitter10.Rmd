@@ -1,11 +1,3 @@
----
-title: "Objective 1: Characterization"
-author: "Matthiew Haines"
-date: "`r Sys.Date()`"
-output: bookdown::html_document2()
-bibliography: [packages.bib, MyLibrary.bib]
-github-repo: matthiewbhaines/Objective1
----
 # 1:10 Bitterness {#Bitter10}
 
 This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023.  
