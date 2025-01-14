@@ -4,15 +4,17 @@ This will be the data analysis and results of the 1:5 nose closed study run in M
 
 See the 1:10 brew strength bitter analysis [here](#Bitter10). 
 
-A 1:5 brew strength (coffee:water, w/w) is representative of a cold brew concentrate. Our ~~**hypotheses**~~ (note 12-24-24: the following were not hypotheses, they are *interpretations*) were as follows:  
+A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our hypotheses was:  
+
+> Milk will reduce the bitterness of cold brew coffee more than water  
+
+This hypothesis is thought to be seen regardless of condition (nose closed or nose open). 
+
+Some interpretations of expected data would be:
 
 - In the nose closed condition a reduction in bitterness from the milky coffee would suggest a physicochemical interaction between the milk and coffee  
 - Milk, being 86% water [@walstraDairyTechnologyPrinciples1999] could have a similar effect as water would when added to coffee   
 - In the nose opened condition, a reduction in bitterness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
-
-> Note 12-24-24: We had initially hypothesized that there would be a physicochemical interaction (such as protein-polyphenol interaction)  
-
-Note 01-06-25: I think the hypothesis was that the addition of milk would reduce the bitterness of cold brew coffee.  
 
 ## Nose Closed Condition
 
@@ -23,7 +25,8 @@ Note 01-06-25: I think the hypothesis was that the addition of milk would reduce
 
 ### R Index  
 In the paired comparisons between when skim milk or whole milk was added to the coffee, there is not enough evidence to suggest one will reduce the bitterness more than the other [cf. @keastModificationBitternessCaffeine2008].  
-The critical value for a 2-tailed test is 0.62.  
+The critical value for a 2-tailed test is **0.62**.  
+
 
 
 
@@ -39,7 +42,7 @@ The critical value for a 2-tailed test is 0.62.
 <p class="caption">(\#fig:study3ClosedMilkRViz)R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05).</p>
 </div>
 
-For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter. The critical value for a one tailed R-index calculation is 0.62.  
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter. The critical value for a one tailed R-index calculation is **0.62**.  
 
 
 
@@ -60,7 +63,7 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 </div>
 
 - No discrimination was seen at either the 8% or 17% addition levels  
-  + To me, this calls into question Figure (see \@ref(fig:study1ClosedWaterRViz))   
+  + To me, this calls into question Figure \@ref(fig:study1ClosedWaterRViz) 
 
 ### Ratings  
 The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
@@ -87,7 +90,7 @@ Table: (\#tab:study3KableClosedRatings)Bitterness intensities, standard deviatio
 
 
 
-The Bonferroni corrected $\alpha$ would be 0.0083.
+The Bonferroni corrected $\alpha$ would be **0.0167**.
 
 
 ``` r
@@ -172,12 +175,11 @@ mean difference
         0.41875 
 ```
 
-
-- Marginal reduction in ratings between the 8% skim milk and 8% whole milk (t = 1.735, p = 0.09) 
+- Ratings between the 8% skim milk and 8% whole milk were NSD (t = 1.735, p = 0.09) 
 - Ratings between the 8% skim milk and 8% water were NSD (t = -1.255, p = 0.89) 
 - Ratings between the 8% whole milk and 8% water were NSD (t = 0.495, p = 0.31) 
 
-- 17% milk comparisons were not significantly different in ratings (t = -0.517, p = 0.61)
+- Ratings between the 17% skim milk and 17% whole milk were NSD (t = -0.517, p = 0.61)
 - Ratings between the 17% skim milk and 17% water were NSD (t = -0.189, p = 0.57)  
 - Ratings between the 17% whole milk and 17% water were NSD (t = 1.046, p = 0.15) 
 
@@ -200,7 +202,7 @@ mean difference
 
 
 ### R Index
-The R critical value for a 2-tailed test (milk comparisons) is: 0.63.  
+The R critical value for a 2-tailed test (milk comparisons) is: **0.63**.  
 
 
 
@@ -228,7 +230,7 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 
 
 - no discrimination between the 17% skim milk and 17% water samples (R Index = 0.51, p > 0.05)  
-- discrimination seen between the 17% whole milk and 17% water samples (R Index = 0.74, p $\le$ 0.001)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = 0.74, p $\le$ **0.001**)  
 
 
 <div class="figure">
@@ -346,12 +348,11 @@ mean difference
 
 - NSD between 8% skim and whole milk (t = -0.04, p = 0.967)
 - NSD between 8% skim and 8% water ratings (t = -0.29, p = 0.61)  
-- marginal reduction between 8% whole milk and 8% water ratings (t = -1.33, p = 0.097)  
+- NSD between 8% whole milk and 8% water ratings (t = -1.33, p = 0.097)  
 
 - NSD between 17% skim and 17% whole milk ratings (t = 0.85, p = 0.4)  
 - NSD between 17% skim and 17% water ratings (t = 0.32, p = 0.38)  
-- significant reduction between 17% whole milk and 17% water ratings (t = 2.32, p = 0.013)  
-
+- significant reduction between 17% whole milk and 17% water ratings (t = 2.32, p = **0.013**)  
 
 
 
@@ -368,7 +369,7 @@ mean difference
 <p class="caption">(\#fig:study3OpenedWaterRatingsViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
 </div>
 
-### Comparison of Conditions (R-index) 
+## Comparison of Conditions
 
 
 <div class="figure">
@@ -385,5 +386,11 @@ mean difference
 </div>
 
 - Figure \@ref(fig:study3WaterCombineRViz) shows that only the 17% whole milk was able to be discriminated from the 17% water addition.
-  + how does this compare to Figure \@ref(fig:study1WaterCombineRViz)?
+  + how does this compare to **Figure \@ref(fig:study1WaterCombineRViz)**?
 
+## Notes {-}
+<input type="checkbox"> examine the participant data  
+  - do panelists need to be excluded because they do not meet inclusion criteria?  
+<input type="checkbox"> update Rindex figures like Chris described  
+<input type="checkbox"> resolve `warnings()`?
+<input type="checkbox"> resolve study 1 figure reference

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Titratable Acidity, pH, and Sourness | Objective 1: Characterization</title>
+  <meta name="description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Titratable Acidity, pH, and Sourness | Objective 1: Characterization" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="matthiewbhaines/Objective1" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Titratable Acidity, pH, and Sourness | Objective 1: Characterization" />
+  
+  <meta name="twitter:description" content="<p>This is a minimal example of using the bookdown package to write a book.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="Matthiew Haines" />
+
+
+<meta name="date" content="2025-01-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="Sour5.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Objective 1 Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#usage"><i class="fa fa-check"></i><b>1.1</b> Usage</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#render-book"><i class="fa fa-check"></i><b>1.2</b> Render book</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#preview-book"><i class="fa fa-check"></i><b>1.3</b> Preview book</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="Bitter10.html"><a href="Bitter10.html"><i class="fa fa-check"></i><b>2</b> 1:10 Bitterness</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="Bitter10.html"><a href="Bitter10.html#nose-closed-condition"><i class="fa fa-check"></i><b>2.1</b> Nose Closed Condition</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="Bitter10.html"><a href="Bitter10.html#r-index"><i class="fa fa-check"></i><b>2.1.1</b> R Index</a></li>
+<li class="chapter" data-level="2.1.2" data-path="Bitter10.html"><a href="Bitter10.html#ratings"><i class="fa fa-check"></i><b>2.1.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="Bitter10.html"><a href="Bitter10.html#nose-open-condition"><i class="fa fa-check"></i><b>2.2</b> Nose Open Condition</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="Bitter10.html"><a href="Bitter10.html#r-index-1"><i class="fa fa-check"></i><b>2.2.1</b> R Index</a></li>
+<li class="chapter" data-level="2.2.2" data-path="Bitter10.html"><a href="Bitter10.html#ratings-1"><i class="fa fa-check"></i><b>2.2.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="Bitter10.html"><a href="Bitter10.html#Bitter10Comp"><i class="fa fa-check"></i><b>2.3</b> Comparison of Conditions</a></li>
+<li class="chapter" data-level="" data-path="Bitter10.html"><a href="Bitter10.html#notes"><i class="fa fa-check"></i>Notes</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="Sour10.html"><a href="Sour10.html"><i class="fa fa-check"></i><b>3</b> 1:10 Sourness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="Sour10.html"><a href="Sour10.html#nose-closed-condition-1"><i class="fa fa-check"></i><b>3.1</b> Nose Closed Condition</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="Sour10.html"><a href="Sour10.html#r-index-2"><i class="fa fa-check"></i><b>3.1.1</b> R Index</a></li>
+<li class="chapter" data-level="3.1.2" data-path="Sour10.html"><a href="Sour10.html#ratings-2"><i class="fa fa-check"></i><b>3.1.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="Sour10.html"><a href="Sour10.html#nose-open-condition-1"><i class="fa fa-check"></i><b>3.2</b> Nose Open Condition</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="Sour10.html"><a href="Sour10.html#r-index-3"><i class="fa fa-check"></i><b>3.2.1</b> R Index</a></li>
+<li class="chapter" data-level="3.2.2" data-path="Sour10.html"><a href="Sour10.html#ratings-3"><i class="fa fa-check"></i><b>3.2.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="Sour10.html"><a href="Sour10.html#comparison-of-conditions"><i class="fa fa-check"></i><b>3.3</b> Comparison of Conditions</a></li>
+<li class="chapter" data-level="" data-path="Sour10.html"><a href="Sour10.html#notes-1"><i class="fa fa-check"></i>Notes</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="Bitter5.html"><a href="Bitter5.html"><i class="fa fa-check"></i><b>4</b> 1:5 Bitterness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="Bitter5.html"><a href="Bitter5.html#nose-closed-condition-2"><i class="fa fa-check"></i><b>4.1</b> Nose Closed Condition</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="Bitter5.html"><a href="Bitter5.html#r-index-4"><i class="fa fa-check"></i><b>4.1.1</b> R Index</a></li>
+<li class="chapter" data-level="4.1.2" data-path="Bitter5.html"><a href="Bitter5.html#ratings-4"><i class="fa fa-check"></i><b>4.1.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="Bitter5.html"><a href="Bitter5.html#nose-open-condition-2"><i class="fa fa-check"></i><b>4.2</b> Nose Open Condition</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="Bitter5.html"><a href="Bitter5.html#r-index-5"><i class="fa fa-check"></i><b>4.2.1</b> R Index</a></li>
+<li class="chapter" data-level="4.2.2" data-path="Bitter5.html"><a href="Bitter5.html#ratings-5"><i class="fa fa-check"></i><b>4.2.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="Bitter5.html"><a href="Bitter5.html#comparison-of-conditions-1"><i class="fa fa-check"></i><b>4.3</b> Comparison of Conditions</a></li>
+<li class="chapter" data-level="" data-path="Bitter5.html"><a href="Bitter5.html#notes-2"><i class="fa fa-check"></i>Notes</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="Sour5.html"><a href="Sour5.html"><i class="fa fa-check"></i><b>5</b> 1:5 Sourness</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="Sour5.html"><a href="Sour5.html#nose-closed-condition-3"><i class="fa fa-check"></i><b>5.1</b> Nose Closed Condition</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="Sour5.html"><a href="Sour5.html#r-index-6"><i class="fa fa-check"></i><b>5.1.1</b> R Index</a></li>
+<li class="chapter" data-level="5.1.2" data-path="Sour5.html"><a href="Sour5.html#ratings-6"><i class="fa fa-check"></i><b>5.1.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="Sour5.html"><a href="Sour5.html#nose-open-condition-3"><i class="fa fa-check"></i><b>5.2</b> Nose Open Condition</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="Sour5.html"><a href="Sour5.html#r-index-7"><i class="fa fa-check"></i><b>5.2.1</b> R Index</a></li>
+<li class="chapter" data-level="5.2.2" data-path="Sour5.html"><a href="Sour5.html#ratings-7"><i class="fa fa-check"></i><b>5.2.2</b> Ratings</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="Sour5.html"><a href="Sour5.html#comparison-of-conditions-2"><i class="fa fa-check"></i><b>5.3</b> Comparison of Conditions</a></li>
+<li class="chapter" data-level="" data-path="Sour5.html"><a href="Sour5.html#notes-3"><i class="fa fa-check"></i>Notes</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="TA.html"><a href="TA.html"><i class="fa fa-check"></i><b>6</b> Titratable Acidity, pH, and Sourness</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="TA.html"><a href="TA.html#titratable-acidity"><i class="fa fa-check"></i><b>6.1</b> Titratable Acidity</a></li>
+<li class="chapter" data-level="6.2" data-path="TA.html"><a href="TA.html#ta-percent-acid"><i class="fa fa-check"></i><b>6.2</b> TA Percent Acid</a></li>
+<li class="chapter" data-level="6.3" data-path="TA.html"><a href="TA.html#correlation-with-sour-ratings"><i class="fa fa-check"></i><b>6.3</b> Correlation with Sour Ratings</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="TA.html"><a href="TA.html#ta-readings-sourness"><i class="fa fa-check"></i><b>6.3.1</b> TA Readings + Sourness</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Objective 1: Characterization</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="TA" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Titratable Acidity, pH, and Sourness<a href="TA.html#TA" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="titratable-acidity" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Titratable Acidity<a href="TA.html#titratable-acidity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="TA.html#cb11-1" tabindex="-1"></a>aov10<span class="fl">.8</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(mL_NaOH <span class="sc">~</span> Sample <span class="sc">+</span> Rep, <span class="at">data =</span> TA10<span class="fl">.8</span>)</span>
+<span id="cb11-2"><a href="TA.html#cb11-2" tabindex="-1"></a><span class="fu">summary</span>(aov10<span class="fl">.8</span>)</span></code></pre></div>
+<pre><code>            Df  Sum Sq Mean Sq F value Pr(&gt;F)  
+Sample       2 0.07614 0.03807   5.026  0.081 .
+Rep          2 0.01395 0.00697   0.921  0.469  
+Residuals    4 0.03030 0.00757                 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="TA.html#cb13-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">LSD.test</span>(aov10<span class="fl">.8</span>, <span class="at">trt =</span> <span class="st">&quot;Sample&quot;</span>)<span class="sc">$</span>groups)</span></code></pre></div>
+<pre><code>           mL_NaOH groups
+Whole8-10 2.219433      a
+Skim8-10  2.118067     ab
+Water8-10 1.994500      b</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="TA.html#cb15-1" tabindex="-1"></a><span class="co"># marginal change in TA</span></span>
+<span id="cb15-2"><a href="TA.html#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="TA.html#cb15-3" tabindex="-1"></a>aov10<span class="fl">.17</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(mL_NaOH <span class="sc">~</span> Sample <span class="sc">+</span> Rep, <span class="at">data =</span> TA10<span class="fl">.17</span>)</span>
+<span id="cb15-4"><a href="TA.html#cb15-4" tabindex="-1"></a><span class="fu">summary</span>(aov10<span class="fl">.17</span>)</span></code></pre></div>
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Sample       2 0.4796 0.23981  28.044 0.00443 **
+Rep          2 0.0194 0.00970   1.134 0.40729   
+Residuals    4 0.0342 0.00855                   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="TA.html#cb17-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">LSD.test</span>(aov10<span class="fl">.17</span>, <span class="at">trt =</span> <span class="st">&quot;Sample&quot;</span>)<span class="sc">$</span>groups)</span></code></pre></div>
+<pre><code>            mL_NaOH groups
+Skim17-10  2.363733      a
+Whole17-10 2.224067      a
+Water17-10 1.819367      b</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="TA.html#cb19-1" tabindex="-1"></a><span class="co"># water significantly less acidic than milk additions</span></span>
+<span id="cb19-2"><a href="TA.html#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="TA.html#cb19-3" tabindex="-1"></a>aov5<span class="fl">.8</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(mL_NaOH <span class="sc">~</span> Sample <span class="sc">+</span> Rep, <span class="at">data =</span> TA5<span class="fl">.8</span>)</span>
+<span id="cb19-4"><a href="TA.html#cb19-4" tabindex="-1"></a><span class="fu">summary</span>(aov5<span class="fl">.8</span>)</span></code></pre></div>
+<pre><code>            Df  Sum Sq Mean Sq F value Pr(&gt;F)
+Sample       2 0.11571 0.05786   3.869  0.116
+Rep          2 0.01323 0.00662   0.442  0.671
+Residuals    4 0.05981 0.01495               </code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="TA.html#cb21-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">LSD.test</span>(aov5<span class="fl">.8</span>, <span class="at">trt =</span> <span class="st">&quot;Sample&quot;</span>)<span class="sc">$</span>groups)</span></code></pre></div>
+<pre><code>          mL_NaOH groups
+Whole8-5 3.845333      a
+Skim8-5  3.793267      a
+Water8-5 3.583033      a</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="TA.html#cb23-1" tabindex="-1"></a><span class="co"># no difference in TA</span></span>
+<span id="cb23-2"><a href="TA.html#cb23-2" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="TA.html#cb23-3" tabindex="-1"></a>aov5<span class="fl">.17</span> <span class="ot">&lt;-</span> <span class="fu">aov</span>(mL_NaOH <span class="sc">~</span> Sample <span class="sc">+</span> Rep, <span class="at">data =</span> TA5<span class="fl">.17</span>)</span>
+<span id="cb23-4"><a href="TA.html#cb23-4" tabindex="-1"></a><span class="fu">summary</span>(aov5<span class="fl">.17</span>)</span></code></pre></div>
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Sample       2 0.4423 0.22113  36.931 0.00264 **
+Rep          2 0.0019 0.00097   0.163 0.85519   
+Residuals    4 0.0240 0.00599                   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="TA.html#cb25-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">LSD.test</span>(aov5<span class="fl">.17</span>, <span class="at">trt =</span> <span class="st">&quot;Sample&quot;</span>)<span class="sc">$</span>groups)</span></code></pre></div>
+<pre><code>           mL_NaOH groups
+Whole17-5 3.996000      a
+Skim17-5  3.980867      a
+Water17-5 3.518367      b</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="TA.html#cb27-1" tabindex="-1"></a><span class="co"># water significantly less acidic</span></span></code></pre></div>
+<ul>
+<li>AOV model includes Sample and Rep main effects on mL NaOH readings
+<ul>
+<li>no rep effects seen in anovas (p &gt; 0.05)</li>
+<li>at 1:10 and 8% addition, water was significantly different from whole milk addition</li>
+<li>at 17% addition (both 1:10 and 1:5), water was significantly different from either milk addition</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="TA.html#cb28-1" tabindex="-1"></a>coffeelevels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Water&quot;</span>, <span class="st">&quot;Skim&quot;</span>, <span class="st">&quot;Whole&quot;</span>,</span>
+<span id="cb28-2"><a href="TA.html#cb28-2" tabindex="-1"></a>            <span class="st">&quot;Black5&quot;</span>, <span class="st">&quot;Black10&quot;</span>,</span>
+<span id="cb28-3"><a href="TA.html#cb28-3" tabindex="-1"></a>            <span class="st">&quot;Skim17-5&quot;</span>, <span class="st">&quot;Whole17-5&quot;</span>, <span class="st">&quot;Water17-5&quot;</span>,</span>
+<span id="cb28-4"><a href="TA.html#cb28-4" tabindex="-1"></a>            <span class="st">&quot;Skim8-5&quot;</span>, <span class="st">&quot;Whole8-5&quot;</span>,<span class="st">&quot;Water8-5&quot;</span>, </span>
+<span id="cb28-5"><a href="TA.html#cb28-5" tabindex="-1"></a>            <span class="st">&quot;Skim17-10&quot;</span>, <span class="st">&quot;Whole17-10&quot;</span>, <span class="st">&quot;Water17-10&quot;</span>,</span>
+<span id="cb28-6"><a href="TA.html#cb28-6" tabindex="-1"></a>            <span class="st">&quot;Skim8-10&quot;</span>, <span class="st">&quot;Whole8-10&quot;</span>, <span class="st">&quot;Water8-10&quot;</span>) </span>
+<span id="cb28-7"><a href="TA.html#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="TA.html#cb28-8" tabindex="-1"></a>TASummary <span class="ot">&lt;-</span> <span class="fu">summarySE</span>(<span class="at">data =</span> TAReadings, <span class="at">measurevar =</span> <span class="st">&quot;mL_NaOH&quot;</span>, <span class="at">groupvars =</span> <span class="st">&quot;Sample&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Sample, mL_NaOH, sd) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">factor</span>(Sample, <span class="at">levels =</span> coffeelevels)) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>))</span>
+<span id="cb28-9"><a href="TA.html#cb28-9" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="TA.html#cb28-10" tabindex="-1"></a>TASummary<span class="sc">$</span>groups <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>,</span>
+<span id="cb28-11"><a href="TA.html#cb28-11" tabindex="-1"></a>                      <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;AB&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb28-12"><a href="TA.html#cb28-12" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="TA.html#cb28-13" tabindex="-1"></a>coffeeorder <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Skim8-10&quot;</span>, <span class="st">&quot;Whole8-10&quot;</span>, <span class="st">&quot;Water8-10&quot;</span>,</span>
+<span id="cb28-14"><a href="TA.html#cb28-14" tabindex="-1"></a>                  <span class="st">&quot;Skim17-10&quot;</span>, <span class="st">&quot;Whole17-10&quot;</span>, <span class="st">&quot;Water17-10&quot;</span>,</span>
+<span id="cb28-15"><a href="TA.html#cb28-15" tabindex="-1"></a>                  <span class="st">&quot;Skim8-5&quot;</span>, <span class="st">&quot;Whole8-5&quot;</span>,<span class="st">&quot;Water8-5&quot;</span>,</span>
+<span id="cb28-16"><a href="TA.html#cb28-16" tabindex="-1"></a>                  <span class="st">&quot;Skim17-5&quot;</span>, <span class="st">&quot;Whole17-5&quot;</span>, <span class="st">&quot;Water17-5&quot;</span>)</span>
+<span id="cb28-17"><a href="TA.html#cb28-17" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="TA.html#cb28-18" tabindex="-1"></a>TASummary<span class="sc">$</span>Sample <span class="ot">&lt;-</span> <span class="fu">factor</span>(TASummary<span class="sc">$</span>Sample, <span class="at">levels =</span> coffeeorder)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:TAGroupsViz"></span>
+<img src="05-TAData_files/figure-html/TAGroupsViz-1.png" alt="Titratable acidity (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test." width="672" />
+<p class="caption">
+Figure 6.1: Titratable acidity (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test.
+</p>
+</div>
+</div>
+<div id="ta-percent-acid" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> TA Percent Acid<a href="TA.html#ta-percent-acid" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span class="math display">\[
+\%\ acid\ (w/v) = \frac{N \cdot V_1 \cdot Eq wt}{V_2 \cdot 1000} \cdot 100
+\]</span></p>
+<p>where</p>
+<ul>
+<li><p>N = normality of titrant</p></li>
+<li><p><span class="math inline">\(V_1\)</span> = volume of titrant</p></li>
+<li><p>Eqwt = equivalent weight of relevant acid</p></li>
+<li><p>Eqwt CGA = 354.31</p></li>
+<li><p><span class="math inline">\(V_2\)</span> = volume of solution</p></li>
+<li><p>AOV model includes Sample and Rep main effects on percent CGA calculations</p>
+<ul>
+<li>no rep effects seen in anovas (p &gt; 0.05)</li>
+<li>at 1:10 and 8% addition, water was significantly different from whole milk addition</li>
+<li>at 17% addition (both 1:10 and 1:5), water was significantly different from either milk addition</li>
+</ul></li>
+</ul>
+<pre><code>##        Sample  mL_NaOH          sd groups
+## 1    Skim17-5 3.980867 0.046687721      A
+## 2   Whole17-5 3.996000 0.073982971      A
+## 3   Water17-5 3.518367 0.072777904      B
+## 4     Skim8-5 3.793267 0.120494039      A
+## 5    Whole8-5 3.845333 0.034670785      A
+## 6    Water8-5 3.583033 0.144231666      A
+## 7   Skim17-10 2.363733 0.156855804      A
+## 8  Whole17-10 2.224067 0.005644762      A
+## 9  Water17-10 1.819367 0.046502294      B
+## 10   Skim8-10 2.118067 0.022627491     AB
+## 11  Whole8-10 2.219433 0.017810484      A
+## 12  Water8-10 1.994500 0.145922274      B</code></pre>
+<p><img src="05-TAData_files/figure-html/acid_viz-1.png" width="672" /></p>
+<div class="figure"><span style="display:block;" id="fig:CGAGroupsViz"></span>
+<img src="05-TAData_files/figure-html/CGAGroupsViz-1.png" alt="Percent chlorogenic acid (CGA) (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test." width="672" />
+<p class="caption">
+Figure 6.2: Percent chlorogenic acid (CGA) (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test.
+</p>
+</div>
+</div>
+<div id="correlation-with-sour-ratings" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Correlation with Sour Ratings<a href="TA.html#correlation-with-sour-ratings" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ta-readings-sourness" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> TA Readings + Sourness<a href="TA.html#ta-readings-sourness" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="TA.html#cb30-1" tabindex="-1"></a><span class="fu">unique</span>(brew10closedsour_ratings_long<span class="sc">$</span>Sample)</span></code></pre></div>
+<pre><code>##  [1] &quot;sourness_13&quot; &quot;sourness_15&quot; &quot;sourness_14&quot; &quot;sourness_17&quot; &quot;sourness_16&quot;
+##  [6] &quot;sourness_18&quot; &quot;sourness_19&quot; &quot;sourness_21&quot; &quot;sourness_20&quot; &quot;sourness_23&quot;
+## [11] &quot;sourness_22&quot; &quot;sourness_24&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="TA.html#cb32-1" tabindex="-1"></a>brew10closedsour_ratings_long <span class="ot">&lt;-</span> brew10closedsour_ratings_long <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="TA.html#cb32-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_13&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-3"><a href="TA.html#cb32-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_14&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="TA.html#cb32-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_15&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="TA.html#cb32-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_16&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="TA.html#cb32-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_17&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-7"><a href="TA.html#cb32-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_18&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-8"><a href="TA.html#cb32-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_19&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-9"><a href="TA.html#cb32-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_20&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-10"><a href="TA.html#cb32-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_21&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-11"><a href="TA.html#cb32-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_22&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-12"><a href="TA.html#cb32-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_23&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-13"><a href="TA.html#cb32-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_24&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-10&quot;</span>)) </span>
+<span id="cb32-14"><a href="TA.html#cb32-14" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="TA.html#cb32-15" tabindex="-1"></a><span class="fu">unique</span>(df10openedSour_ratings_long<span class="sc">$</span>Sample)</span></code></pre></div>
+<pre><code>##  [1] &quot;sourness_13&quot; &quot;sourness_15&quot; &quot;sourness_14&quot; &quot;sourness_17&quot; &quot;sourness_16&quot;
+##  [6] &quot;sourness_18&quot; &quot;sourness_19&quot; &quot;sourness_21&quot; &quot;sourness_20&quot; &quot;sourness_23&quot;
+## [11] &quot;sourness_22&quot; &quot;sourness_24&quot;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="TA.html#cb34-1" tabindex="-1"></a>df10openedSour_ratings_long <span class="ot">&lt;-</span> df10openedSour_ratings_long <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="TA.html#cb34-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_13&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="TA.html#cb34-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_14&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-4"><a href="TA.html#cb34-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_15&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-5"><a href="TA.html#cb34-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_16&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-6"><a href="TA.html#cb34-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_17&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-7"><a href="TA.html#cb34-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_18&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-8"><a href="TA.html#cb34-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_19&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-9"><a href="TA.html#cb34-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_20&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-10"><a href="TA.html#cb34-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_21&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-11"><a href="TA.html#cb34-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_22&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-12"><a href="TA.html#cb34-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_23&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-10&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-13"><a href="TA.html#cb34-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_24&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-10&quot;</span>)) </span>
+<span id="cb34-14"><a href="TA.html#cb34-14" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="TA.html#cb34-15" tabindex="-1"></a><span class="fu">unique</span>(brew5closedsour_ratings_long<span class="sc">$</span>Sample)</span></code></pre></div>
+<pre><code>##  [1] &quot;sourness_1&quot;  &quot;sourness_3&quot;  &quot;sourness_2&quot;  &quot;sourness_5&quot;  &quot;sourness_4&quot; 
+##  [6] &quot;sourness_6&quot;  &quot;sourness_7&quot;  &quot;sourness_9&quot;  &quot;sourness_8&quot;  &quot;sourness_11&quot;
+## [11] &quot;sourness_10&quot; &quot;sourness_12&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="TA.html#cb36-1" tabindex="-1"></a>brew5closedsour_ratings_long <span class="ot">&lt;-</span> brew5closedsour_ratings_long <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="TA.html#cb36-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="TA.html#cb36-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_2&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4"><a href="TA.html#cb36-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_3&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-5"><a href="TA.html#cb36-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_4&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-6"><a href="TA.html#cb36-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_5&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-7"><a href="TA.html#cb36-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_6&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-8"><a href="TA.html#cb36-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_7&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-9"><a href="TA.html#cb36-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_8&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-10"><a href="TA.html#cb36-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_9&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-11"><a href="TA.html#cb36-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_10&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-12"><a href="TA.html#cb36-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_11&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-13"><a href="TA.html#cb36-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_12&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-5&quot;</span>)) </span>
+<span id="cb36-14"><a href="TA.html#cb36-14" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="TA.html#cb36-15" tabindex="-1"></a><span class="fu">unique</span>(df5openedSour_ratings_long<span class="sc">$</span>Sample)</span></code></pre></div>
+<pre><code>##  [1] &quot;sourness_1&quot;  &quot;sourness_3&quot;  &quot;sourness_2&quot;  &quot;sourness_5&quot;  &quot;sourness_4&quot; 
+##  [6] &quot;sourness_6&quot;  &quot;sourness_7&quot;  &quot;sourness_9&quot;  &quot;sourness_8&quot;  &quot;sourness_11&quot;
+## [11] &quot;sourness_10&quot; &quot;sourness_12&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="TA.html#cb38-1" tabindex="-1"></a>df5openedSour_ratings_long <span class="ot">&lt;-</span> df5openedSour_ratings_long <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="TA.html#cb38-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_1&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-3"><a href="TA.html#cb38-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_2&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-4"><a href="TA.html#cb38-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_3&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-5"><a href="TA.html#cb38-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_4&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-6"><a href="TA.html#cb38-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_5&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-7"><a href="TA.html#cb38-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_6&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water17-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-8"><a href="TA.html#cb38-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_7&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-9"><a href="TA.html#cb38-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_8&quot;</span> <span class="ot">=</span> <span class="st">&quot;Skim8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-10"><a href="TA.html#cb38-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_9&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-11"><a href="TA.html#cb38-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_10&quot;</span> <span class="ot">=</span> <span class="st">&quot;Whole8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-12"><a href="TA.html#cb38-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_11&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-5&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-13"><a href="TA.html#cb38-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sample =</span> <span class="fu">recode</span>(Sample, <span class="st">&quot;sourness_12&quot;</span> <span class="ot">=</span> <span class="st">&quot;Water8-5&quot;</span>)) </span>
+<span id="cb38-14"><a href="TA.html#cb38-14" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="TA.html#cb38-15" tabindex="-1"></a><span class="fu">colnames</span>(df5openedSour_ratings_long)</span></code></pre></div>
+<pre><code>## [1] &quot;participant&quot; &quot;Sample&quot;      &quot;Intensity&quot;   &quot;coffee&quot;      &quot;cond&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="TA.html#cb40-1" tabindex="-1"></a>brew10sour <span class="ot">&lt;-</span> <span class="fu">full_join</span>(brew10closedsour_ratings_long, df10openedSour_ratings_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;participant&quot;</span>, <span class="st">&quot;Sample&quot;</span>, <span class="st">&quot;Intensity&quot;</span>, <span class="st">&quot;coffee&quot;</span>, <span class="st">&quot;cond&quot;</span>))</span>
+<span id="cb40-2"><a href="TA.html#cb40-2" tabindex="-1"></a>brew5sour <span class="ot">&lt;-</span> <span class="fu">full_join</span>(brew5closedsour_ratings_long, df5openedSour_ratings_long, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;participant&quot;</span>, <span class="st">&quot;Sample&quot;</span>, <span class="st">&quot;Intensity&quot;</span>, <span class="st">&quot;coffee&quot;</span>, <span class="st">&quot;cond&quot;</span>))</span>
+<span id="cb40-3"><a href="TA.html#cb40-3" tabindex="-1"></a>sourDF <span class="ot">&lt;-</span> <span class="fu">full_join</span>(brew10sour, brew5sour)</span></code></pre></div>
+<pre><code>## Joining with `by = join_by(participant, Sample, Intensity, coffee, cond)`</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="TA.html#cb42-1" tabindex="-1"></a><span class="fu">view</span>(sourDF)</span>
+<span id="cb42-2"><a href="TA.html#cb42-2" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="TA.html#cb42-3" tabindex="-1"></a>sourTAjoined <span class="ot">&lt;-</span> <span class="fu">full_join</span>(sourDF, TASummary)</span></code></pre></div>
+<pre><code>## Joining with `by = join_by(Sample)`</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="TA.html#cb44-1" tabindex="-1"></a><span class="fu">view</span>(sourTAjoined)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="TA.html#cb45-1" tabindex="-1"></a>sourTAjoined <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb45-2"><a href="TA.html#cb45-2" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mL_NaOH, <span class="at">y =</span> Intensity)) <span class="sc">+</span></span>
+<span id="cb45-3"><a href="TA.html#cb45-3" tabindex="-1"></a>  <span class="fu">facet_grid</span>(coffee<span class="sc">~</span>cond) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="TA.html#cb45-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Sample), <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb45-5"><a href="TA.html#cb45-5" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb45-6"><a href="TA.html#cb45-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb45-7"><a href="TA.html#cb45-7" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">2</span>))</span></code></pre></div>
+<p><img src="05-TAData_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div class="csl-entry">
+Bennett, Samantha M., Lisa Zhou, and John E. Hayes. 2012. <span>“Using Milk Fat to Reduce the Irritation and Bitter Taste of Ibuprofen.”</span> <em>Chemosensory Perception</em> 5 (May): 231–36. <a href="https://doi.org/10.1007/s12078-012-9128-6">https://doi.org/10.1007/s12078-012-9128-6</a>.
+</div>
+<div class="csl-entry">
+Keast, Russell S. J. 2008. <span>“Modification of the Bitterness of Caffeine.”</span> <em>Food Quality and Preference</em> 19 (5): 465–72. <a href="https://doi.org/10.1016/j.foodqual.2008.02.002">https://doi.org/10.1016/j.foodqual.2008.02.002</a>.
+</div>
+<div class="csl-entry">
+Walstra, P., T. J. Geurts, A. Noomen, A. Jellema, and M. A. J. S. van Boekel. 1999. <em>Dairy Technology: Principles of Milk Properties and Processes (Food Science and Technology)</em>. <span>CRC</span> Press.
+</div>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="Sour5.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05-TAData.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["OBJ1.pdf", "OBJ1.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

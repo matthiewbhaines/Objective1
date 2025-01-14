@@ -46,11 +46,11 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 
 
 
-- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = 0.63, 0.05 $\ge$ p $\ge$ 0.01)  
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = 0.63, p $\leq$ **0.05**)  
 
    + interestingly, the skim milk sample (the "noise") was chosen more frequently than the water sample (the "signal"): 19/30
 
-- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = 0.65, 0.05 $\ge$ p $\ge$ 0.01)   
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = 0.65, p $\le$ **0.05**)   
 
 
 - no discrimination between the 17% skim milk and 17% water samples (R Index = 0.52, p > 0.05)  
@@ -70,6 +70,7 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 - This is somewhat counter intuitive to what we had hypothesized, as adding more milk (the 17% samples) should have also shown discrimination  
     + what are alternative interpretations/explanations?
       + *01092025*: could fat be creating an inhibitive coating on the tongue where bitter compounds can't connect to the receptors?
+      +*01142025*: the skim milk being perceived as more bitter could be a type I error, a false positive
 
 ### Ratings  
 The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
@@ -205,6 +206,8 @@ mean difference
 <p class="caption">(\#fig:study1ClosedWaterRatingsViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
 </div>
 
+- while there was significance in discrimination between the skim milk/water and whole milk/water at the 8% level, they were not reflected in the ratings (Figure \@ref(fig:study1ClosedWaterRatingsViz)).
+
 ## Nose Open Condition
 
 
@@ -237,7 +240,7 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 
 
 - no discrimination between the 17% skim milk and 17% water samples (R Index = 0.58, p > 0.05)  
-- discrimination seen between the 17% whole milk and 17% water samples (R Index = 0.74, p $\le$ 0.001)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = 0.74, p $\le$ **0.001**)  
 
 
 <div class="figure">
@@ -268,6 +271,7 @@ Table: (\#tab:study1KableOpenRatings)Bitterness intensities, and standard error 
 |bitterness_22 |  4.994118| 0.3599104|
 |bitterness_24 |  5.455882| 0.3363904|
 
+The Bonferroni corrected $\alpha$ would be **0.0167**.
 
 
 ``` r
@@ -361,7 +365,7 @@ mean difference
 
 - NSD between 17% skim and 17% whole milk ratings (t = 1.36, p = 0.18)  
 - NSD between 17% skim and 17% water ratings (t = 1.17, p = 0.13)  
-- Significant reduction between 17% whole milk and 17% water ratings (t = 3.82, p = **2.8\times 10^{-4}**)  
+- Significant difference between 17% whole milk and 17% water ratings (t = 3.82, p = **2.8\times 10^{-4}**)  
 
 
 
@@ -378,7 +382,7 @@ mean difference
 <p class="caption">(\#fig:study1OpenedWaterRatingsViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
 </div>
 
-## Comparison of Conditions
+## Comparison of Conditions {#Bitter10Comp}
 
 
 <div class="figure">
@@ -407,5 +411,3 @@ mean difference
   - do panelists need to be excluded because they do not meet inclusion criteria?  
 <input type="checkbox"> update Rindex figures like Chris described  
 <input type="checkbox"> resolve `warnings()`?
-
-## References {-}

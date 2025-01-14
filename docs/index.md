@@ -1,7 +1,7 @@
 --- 
 title: "Objective 1: Characterization"
 author: "Matthiew Haines"
-date: "2025-01-13"
+date: "2025-01-14"
 site: bookdown::gitbook
 documentclass: book
 bibliography: [packages.bib, MyLibrary.bib]

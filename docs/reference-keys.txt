@@ -19,7 +19,7 @@ fig:study2OpenMilkRViz
 fig:study2OpenedWaterRViz
 tab:study2KableOpenRatings
 fig:study2OpenedMilkRatingsViz
-fig:study2OpenedWaterViZ
+fig:study2OpenedWaterRatingsViZ
 fig:study2MilkCombineRViz
 fig:study2WaterCombineRViz
 fig:study3ClosedMilkRViz
@@ -46,6 +46,8 @@ fig:study4OpenedMilkRatingsViz
 fig:study4OpenedWaterViZ
 fig:study4MilkCombineRViz
 fig:study4WaterCombineRViz
+fig:TAGroupsViz
+fig:CGAGroupsViz
 about
 usage
 render-book
@@ -57,7 +59,7 @@ ratings
 nose-open-condition
 r-index-1
 ratings-1
-comparison-of-conditions
+Bitter10Comp
 Sour10
 nose-closed-condition-1
 r-index-2
@@ -65,7 +67,7 @@ ratings-2
 nose-open-condition-1
 r-index-3
 ratings-3
-comparison-of-conditions-1
+comparison-of-conditions
 Bitter5
 nose-closed-condition-2
 r-index-4
@@ -73,7 +75,7 @@ ratings-4
 nose-open-condition-2
 r-index-5
 ratings-5
-comparison-of-conditions-r-index
+comparison-of-conditions-1
 Sour5
 nose-closed-condition-3
 r-index-6
@@ -82,3 +84,8 @@ nose-open-condition-3
 r-index-7
 ratings-7
 comparison-of-conditions-2
+TA
+titratable-acidity
+ta-percent-acid
+correlation-with-sour-ratings
+ta-readings-sourness
