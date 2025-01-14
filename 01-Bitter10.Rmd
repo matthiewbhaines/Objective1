@@ -225,11 +225,11 @@ water10W8C <- RIndex(8,3,0,0,4,15,length(df10closed$participant))
 
 ```
 
-- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8C)[1], 2)`, 0.05 $\ge$ p $\ge$ 0.01)  
+- discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10S8C)[1], 2)`, p $\leq$ **0.05**)  
 
    + interestingly, the skim milk sample (the "noise") was chosen more frequently than the water sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_20_v_23_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
 
-- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10W8C)[1], 2)`, 0.05 $\ge$ p $\ge$ 0.01)   
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(as.numeric(water10W8C)[1], 2)`, p $\le$ **0.05**)   
 
 ```{r study1closed 17% water, include=FALSE}
 df10closed %>% select(comparison_14_v_17_more_bitter, confidence_17) %>% count(comparison_14_v_17_more_bitter, confidence_17)
@@ -312,6 +312,7 @@ study1closedWaterRViz
 - This is somewhat counter intuitive to what we had hypothesized, as adding more milk (the 17% samples) should have also shown discrimination  
     + what are alternative interpretations/explanations?
       + *01092025*: could fat be creating an inhibitive coating on the tongue where bitter compounds can't connect to the receptors?
+      +*01142025*: the skim milk being perceived as more bitter could be a type I error, a false positive
 
 ### Ratings  
 The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
@@ -329,6 +330,7 @@ sample_order10B <- c("bitterness_13", "bitterness_15", "bitterness_14", "bittern
 kable(summarySE(df10closed_ratings_long, measurevar = "Intensity", groupvars = "Sample") %>% select(Sample, Intensity, se) %>%  arrange(factor(Sample, levels = sample_order10B)),
       caption = "Bitterness intensities and standard error of cold brew coffee samples. Each 2 rows represent the two samples presented in a paired comparison format.")
 # 01092025 may want to learn how to create tables in LaTeX
+# 01142025 may want to use kableextra package instead of LaTeX
 ```
 
 ```{r study1notes, include=FALSE, eval=FALSE}
@@ -467,6 +469,8 @@ plot_grid(study1closedWaterRViz, study1ClosedWaterRatings + theme(strip.backgrou
 # unconvinced of removing facet labels on ratings viz
 ```
 
+- while there was significance in discrimination between the skim milk/water and whole milk/water at the 8% level, they were not reflected in the ratings (Figure \@ref(fig:study1ClosedWaterRatingsViz)).
+
 ## Nose Open Condition
 ```{r study1open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
 brew10opened <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 10)
@@ -571,7 +575,7 @@ Rcriti(length(df10opened$participant), length(df10opened$participant), 0.001, 1)
 ```
 
 - no discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water10S17O)[1], 2)`, p > 0.05)  
-- discrimination seen between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17O)[1], 2)`, p $\le$ 0.001)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = `r round(as.numeric(water10W17O)[1], 2)`, p $\le$ **0.001**)  
 
 ```{r study1opened r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
 Water10ROpened <- tibble(
@@ -650,6 +654,7 @@ kable(summarySE(df10opened_ratings_long, measurevar = "Intensity", groupvars = "
 # may want to learn how to create tables in LaTeX
 ```
 
+The Bonferroni corrected $\alpha$ would be **`r round(0.05/3, 4)`**.
 
 ```{r study1opened t-test, collapse=TRUE, comment=""}
 #| collapse = TRUE
@@ -677,7 +682,7 @@ t.test(df10opened$bitterness_18, df10opened$bitterness_16,
 
 - NSD between 17% skim and 17% whole milk ratings (t = `r round(t.test(df10opened$bitterness_13, df10opened$bitterness_15, paired = TRUE, alternative = "two.sided")$statistic,2)`, p = `r signif(t.test(df10opened$bitterness_13, df10opened$bitterness_15, paired = TRUE, alternative = "two.sided")$p.value,2)`)  
 - NSD between 17% skim and 17% water ratings (t = `r round(t.test(df10opened$bitterness_17, df10opened$bitterness_14, paired = TRUE, alternative = "greater")$statistic,2)`, p = `r signif(t.test(df10opened$bitterness_17, df10opened$bitterness_14, paired = TRUE, alternative = "greater")$p.value,2)`)  
-- Significant reduction between 17% whole milk and 17% water ratings (t = `r round(t.test(df10opened$bitterness_18, df10opened$bitterness_16, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10opened$bitterness_18, df10opened$bitterness_16, paired = TRUE, alternative = "greater")$p.value,2)`**)  
+- Significant difference between 17% whole milk and 17% water ratings (t = `r round(t.test(df10opened$bitterness_18, df10opened$bitterness_16, paired = TRUE, alternative = "greater")$statistic,2)`, p = **`r signif(t.test(df10opened$bitterness_18, df10opened$bitterness_16, paired = TRUE, alternative = "greater")$p.value,2)`**)  
 
 ```{r study1opened viz wrangling, include=FALSE}
 df10opened_ratings_long2 <- df10opened_ratings_long
@@ -875,5 +880,3 @@ Water10RCombineViz
   - do panelists need to be excluded because they do not meet inclusion criteria?  
 <input type="checkbox"> update Rindex figures like Chris described  
 <input type="checkbox"> resolve `warnings()`?
-
-## References {-}
