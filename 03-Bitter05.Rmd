@@ -4,15 +4,17 @@ This will be the data analysis and results of the 1:5 nose closed study run in M
 
 See the 1:10 brew strength bitter analysis [here](#Bitter10). 
 
-A 1:5 brew strength (coffee:water, w/w) is representative of a cold brew concentrate. Our ~~**hypotheses**~~ (note 12-24-24: the following were not hypotheses, they are *interpretations*) were as follows:  
+A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our hypotheses was:  
+
+> Milk will reduce the bitterness of cold brew coffee more than water  
+
+This hypothesis is thought to be seen regardless of condition (nose closed or nose open). 
+
+Some interpretations of expected data would be:
 
 - In the nose closed condition a reduction in bitterness from the milky coffee would suggest a physicochemical interaction between the milk and coffee  
 - Milk, being 86% water [@walstraDairyTechnologyPrinciples1999] could have a similar effect as water would when added to coffee   
 - In the nose opened condition, a reduction in bitterness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
-
-> Note 12-24-24: We had initially hypothesized that there would be a physicochemical interaction (such as protein-polyphenol interaction)  
-
-Note 01-06-25: I think the hypothesis was that the addition of milk would reduce the bitterness of cold brew coffee.  
 
 ## Nose Closed Condition
 ```{r study3library, message=FALSE, warning=FALSE, include=FALSE}
