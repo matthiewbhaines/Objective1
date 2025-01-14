@@ -287,7 +287,7 @@ study3closedWaterRViz
 ```
 
 - No discrimination was seen at either the 8% or 17% addition levels  
-  + To me, this calls into question Figure \@ref(fig:study1ClosedWaterRViz)   
+  + To me, this calls into question Figure \@ref(fig:study1ClosedWaterRViz) 
 
 ### Ratings  
 The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
@@ -756,7 +756,7 @@ plot_grid(study3openedWaterRViz, study3openedWaterRatings + theme(strip.backgrou
 # unconvinced of removing facet labels on ratings viz
 ```
 
-### Comparison of Conditions (R-index) 
+## Comparison of Conditions
 
 ```{r study3Milk5Combine wrangling, include=FALSE}
 Milk5RCombine <- full_join(Milk5R, Milk5ROpen)
@@ -819,5 +819,11 @@ Water5RCombineViz
 ```
 
 - Figure \@ref(fig:study3WaterCombineRViz) shows that only the 17% whole milk was able to be discriminated from the 17% water addition.
-  + how does this compare to Figure \@ref(fig:study1WaterCombineRViz)?
+  + how does this compare to **Figure \@ref(fig:study1WaterCombineRViz)**?
 
+## Notes {-}
+<input type="checkbox"> examine the participant data  
+  - do panelists need to be excluded because they do not meet inclusion criteria?  
+<input type="checkbox"> update Rindex figures like Chris described  
+<input type="checkbox"> resolve `warnings()`?
+<input type="checkbox"> resolve study 1 figure reference

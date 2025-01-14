@@ -1,7 +1,4 @@
 # 1:10 Sourness {#Sour10}
-```{r study2bookdown, message=FALSE, warning=FALSE, include=FALSE, eval=FALSE}
-library(bookdown)
-```
 This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023 on sourness.  
 You can refer to the 1:10 Bitterness results [here](#Bitter10).  
 
