@@ -792,7 +792,7 @@ plot_grid(study1openedWaterRViz, study1OpenedWaterRatings + theme(strip.backgrou
 # see warning in study1OpenedWaterRViz
 ```
 
-## Comparison of Conditions
+## Comparison of Conditions {#Bitter10Comp}
 
 ```{r study1MilkCombine wrangling, include=FALSE}
 Milk10RCombine <- full_join(Milk10R, Milk10ROpen)
