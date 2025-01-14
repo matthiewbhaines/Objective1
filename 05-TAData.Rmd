@@ -37,7 +37,6 @@ library(ggrepel)
 ## Titratable Acidity
 ```{r ta data, include=FALSE}
 TAReadings <- read_excel("~/Research/GitHub/Objective1/TAReadings.xlsx")
-head(TAreadings)
 TAReadings$Rep <- factor(TAReadings$Rep, levels = c(1, 2, 3))
 
 TA5.17 <- TAReadings %>% filter(Sample %in% c("Whole17-5", "Skim17-5", "Water17-5"))
@@ -138,7 +137,7 @@ N <- 0.1
 EqW <- 354.31
 V2 <- 25
 
-TAReadings$percent_CGA <- (N*TAreadings$mL_NaOH*EqW)/(V2*1000)*100
+TAReadings$percent_CGA <- (N*TAReadings$mL_NaOH*EqW)/(V2*1000)*100
 
 TA5.17 <- TAReadings %>% filter(Sample %in% c("Whole17-5", "Skim17-5", "Water17-5"))
 TA5.8 <- TAReadings %>% filter(Sample %in% c("Whole8-5", "Skim8-5", "Water8-5"))
@@ -331,78 +330,67 @@ view(sourTAjoined)
 ```
 
 
-```{r sour wrangling, include=FALSE}
-sourclosed_long <- sourclosed %>% pivot_longer(cols = S1:S12, names_to = "Sample", values_to = "Sourness")
-#length(sourclosed$Participant) #30 participants
-coffeelevels
 
-sourclosed_long$SampleName <- rep(c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
-                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10"), 30)
-#length(sourclosed_long$Participant) #360 rows
-sourclosed_long$Condition <- rep("Closed", 360)
-##view(sourclosed_long)
-
-souropen_long <- souropen %>% select(Participant, S1:S12) %>% 
-  pivot_longer(cols = S1:S12, names_to = "Sample", values_to = "Sourness")
-length(souropen$Participant) # 34 participants
-souropen_long$SampleName <- rep(c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
-                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10"), 34)
-souropen_long$Condition <- rep("Open", length(souropen_long$Participant))
-#view(souropen_long)
-
-sourratings <- full_join(sourclosed_long, souropen_long)
-#view(sourratings) #combined data
+```{r sour rcorr closed, echo=TRUE, include=FALSE, eval=FALSE}
+sourSkim17.5C <- sourTAjoined %>% filter(Sample == "Skim17-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim17.5C <- rcorr(sourSkim17.5C, type = "pearson")) #p < 0.001
+sourSkim17.5O <- sourTAjoined %>% filter(Sample == "Skim17-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim17.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole17.5C <- sourTAjoined %>% filter(Sample == "Whole17-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole17.5C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole17.5O <- sourTAjoined %>% filter(Sample == "Whole17-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole17.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater17.5C <- sourTAjoined %>% filter(Sample == "Water17-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater17.5C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater17.5O <- sourTAjoined %>% filter(Sample == "Water17-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater17.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+##
+sourSkim8.5C <- sourTAjoined %>% filter(Sample == "Skim8-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim8.5C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourSkim8.5O <- sourTAjoined %>% filter(Sample == "Skim8-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim8.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole8.5C <- sourTAjoined %>% filter(Sample == "Whole8-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole8.5C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole8.5O <- sourTAjoined %>% filter(Sample == "Whole8-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole8.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater8.5C <- sourTAjoined %>% filter(Sample == "Water8-5" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater8.5C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater8.5O <- sourTAjoined %>% filter(Sample == "Water8-5" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater8.5O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+##
+sourSkim17.10C <- sourTAjoined %>% filter(Sample == "Skim17-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim17.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourSkim17.10O <- sourTAjoined %>% filter(Sample == "Skim17-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim17.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole17.10C <- sourTAjoined %>% filter(Sample == "Whole17-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole17.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole17.10O <- sourTAjoined %>% filter(Sample == "Whole17-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole17.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater17.10C <- sourTAjoined %>% filter(Sample == "Water17-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater17.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater17.10O <- sourTAjoined %>% filter(Sample == "Water17-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater17.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+##
+sourSkim8.10C <- sourTAjoined %>% filter(Sample == "Skim8-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim8.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourSkim8.10O <- sourTAjoined %>% filter(Sample == "Skim8-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourSkim8.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole8.10C <- sourTAjoined %>% filter(Sample == "Whole8-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole8.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWhole8.10O <- sourTAjoined %>% filter(Sample == "Whole8-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWhole8.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater8.10C <- sourTAjoined %>% filter(Sample == "Water8-10" & cond == "closed") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater8.10C <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
+sourWater8.10O <- sourTAjoined %>% filter(Sample == "Water8-10" & cond == "opened") %>% select(mL_NaOH, Intensity) %>% as.matrix()
+(sourWater8.10O <- rcorr(sour_to_cor_closed, type = "pearson")) #p < 0.001
 ```
-
-```{r ta wrangling 2, include=FALSE}
-TASummary
-
-TAMean <- TASummary %>% select(Sample, mL_NaOH, sd) %>% 
-  filter(Sample %in% c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
-                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10")) 
-
-
-
-sourTAjoined %>% 
-```
-
-```{r sour rcorr closed, echo=TRUE}
-sour_to_cor_closed <- sourTAjoined %>% filter(cond == "Closed") %>%  select(mL_NaOH, Intensity) %>% as.matrix()
-(sour_rcorr_closed <- rcorr(sour_to_cor_closed, type = "pearson")) #p = 0.0208
-```
-```{r sour rcorr open, echo=TRUE}
-sour_to_cor_opened <- sourTAjoined %>% filter(Condition == "Open") %>%  select(mL_NaOH, Sourness) %>% as.matrix()
-(sour_rcorr_opened <- rcorr(sour_to_cor_opened, type = "pearson")) #p = 0.0426
-```
-```{r sour_v_NaOH wrangling, include=FALSE}
-sourTAjoined
-
-colnames(sourclosed_long)
-sourClosedSummary <- summarySE(data = sourclosed_long, measurevar = "Sourness", groupvars = "SampleName") %>% select(SampleName, Sourness, sd, se)
-(sourOpenSummary <- summarySE(data = souropen_long, measurevar = "Sourness", groupvars = "SampleName") %>% select(SampleName, Sourness, sd, se))
-
-sourClosedSummary$Condition <- rep("Closed", length(sourClosedSummary$SampleName))
-sourOpenSummary$Condition <- rep("Open", length(sourOpenSummary$SampleName))
-
-sourClosedSummary
-SourSummary <- full_join(sourClosedSummary, sourOpenSummary)
-SourSummary
-
-TAMean3 <- TAMean2 %>% rename(c("sd" = "TA.sd"))
-SourSummary <- full_join(SourSummary, TAMean3)
-SourSummary
-```
-```{r Sour_v_NaOH_Viz, echo=FALSE, fig.cap='Mean sourness intensity ratings plotted against average titratable acidity readings expressed in mL of NaOH. Vertical error bars represent SE of intensity ratings. Horizontal error bars represent SD of titratable acidity readings.'}
-SourSummary %>% 
-  ggplot(aes(x = mL_NaOH, y = Sourness, color = SampleName)) +
-  facet_grid(~Condition) +
+```{r}
+sourTAjoined %>% drop_na() %>% 
+  ggplot(aes(x = mL_NaOH, y = Intensity)) +
+  facet_grid(coffee~cond) +
+  geom_boxplot(aes(fill = Sample), color = "black") +
+  stat_summary(fun = mean, geom = "point", shape = 21, size = 1) +
   theme_bw() +
-  geom_errorbar(aes(x = mL_NaOH, ymin = Sourness-se, ymax = Sourness+se), linewidth = .5, width = .25,color = "grey") +
-  geom_errorbarh(aes(xmin = mL_NaOH-TA.sd, xmax = mL_NaOH+TA.sd, y = Sourness), linewidth = .5, height = 0.25, color = "grey") +
-  geom_point(size = 2) +
-  theme(panel.grid.major = element_blank(), # remove grid lines
-        panel.grid.minor = element_blank()) +
-  scale_y_continuous(limits = c(0,10), expand = c(0,0)) +
-  labs(x = "mL NaOH")
+  scale_y_continuous(expand = c(0,.2))
 ```
 
