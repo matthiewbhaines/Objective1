@@ -1,0 +1,408 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+# Titratable Acidity, pH, and Sourness {#TA}
+
+```{r library, message=FALSE, warning=FALSE, include=FALSE}
+# data wrangling
+library(plyr)
+library(tidyverse) # data wrangling
+library(str2str) # R viz wrangling
+library(readxl) # read in data
+library(Rmisc) # summarySE()
+library(agricolae) #LSD test
+library(janitor) #clean_names()
+library(tibble)
+
+# correlations
+library(Hmisc)
+
+# analysis
+library(sensR)
+
+#visualizations
+library(ggplot2) # plotting
+library(grid) # adjusting axes on plots
+library(ggsignif) #add signif to plots
+library(cowplot) #combining plots
+library(patchwork)
+library(gghighlight)
+library(knitr)
+library(ggpmisc)
+library(ggrepel)
+```
+
+## Titratable Acidity
+```{r ta data, include=FALSE}
+TAReadings <- read_excel("~/Research/GitHub/Objective1/TAReadings.xlsx")
+head(TAreadings)
+TAReadings$Rep <- factor(TAReadings$Rep, levels = c(1, 2, 3))
+
+TA5.17 <- TAReadings %>% filter(Sample %in% c("Whole17-5", "Skim17-5", "Water17-5"))
+TA5.8 <- TAReadings %>% filter(Sample %in% c("Whole8-5", "Skim8-5", "Water8-5"))
+TA10.17 <- TAReadings %>% filter(Sample %in% c("Whole17-10", "Skim17-10", "Water17-10"))
+TA10.8 <- TAReadings %>% filter(Sample %in% c("Whole8-10", "Skim8-10", "Water8-10"))
+```
+
+```{r ta wrangling, include=TRUE, comment=""}
+aov10.8 <- aov(mL_NaOH ~ Sample + Rep, data = TA10.8)
+summary(aov10.8)
+print(LSD.test(aov10.8, trt = "Sample")$groups)
+# marginal change in TA
+
+aov10.17 <- aov(mL_NaOH ~ Sample + Rep, data = TA10.17)
+summary(aov10.17)
+print(LSD.test(aov10.17, trt = "Sample")$groups)
+# water significantly less acidic than milk additions
+
+aov5.8 <- aov(mL_NaOH ~ Sample + Rep, data = TA5.8)
+summary(aov5.8)
+print(LSD.test(aov5.8, trt = "Sample")$groups)
+# no difference in TA
+
+aov5.17 <- aov(mL_NaOH ~ Sample + Rep, data = TA5.17)
+summary(aov5.17)
+print(LSD.test(aov5.17, trt = "Sample")$groups)
+# water significantly less acidic
+```
+
+- AOV model includes Sample and Rep main effects on mL NaOH readings  
+  + no rep effects seen in anovas (p > 0.05)
+  + at 1:10 and 8% addition, water was significantly different from whole milk addition
+  + at 17% addition (both 1:10 and 1:5), water was significantly different from either milk addition
+
+```{r}
+coffeelevels <- c("Water", "Skim", "Whole",
+            "Black5", "Black10",
+            "Skim17-5", "Whole17-5", "Water17-5",
+            "Skim8-5", "Whole8-5","Water8-5", 
+            "Skim17-10", "Whole17-10", "Water17-10",
+            "Skim8-10", "Whole8-10", "Water8-10") 
+
+TASummary <- summarySE(data = TAReadings, measurevar = "mL_NaOH", groupvars = "Sample") %>% select(Sample, mL_NaOH, sd) %>% arrange(factor(Sample, levels = coffeelevels)) %>% slice(-(1:5))
+
+TASummary$groups <- c("A", "A", "B", "A", "A", "A",
+                      "A", "A", "B", "AB", "A", "B")
+
+coffeeorder <- c("Skim8-10", "Whole8-10", "Water8-10",
+                  "Skim17-10", "Whole17-10", "Water17-10",
+                  "Skim8-5", "Whole8-5","Water8-5",
+                  "Skim17-5", "Whole17-5", "Water17-5")
+
+TASummary$Sample <- factor(TASummary$Sample, levels = coffeeorder)
+``` 
+
+
+```{r ta_viz, echo=FALSE}
+TA_viz <- TASummary %>% 
+  ggplot(aes(x = factor(Sample, levels = coffeeorder), y = mL_NaOH)) +
+  geom_errorbar(data = TASummary,
+                aes(x = Sample, ymin = mL_NaOH-sd, ymax = mL_NaOH+sd), width = 0.25, color = "grey") +
+  geom_point() +  
+  geom_text(data = TASummary,
+            aes(y = 5.5, x = Sample,
+            label = groups), color = "black") +   
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(x = "Sample", y = "mL NaOH") +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 6)) +
+  geom_vline(xintercept = 3.5) +
+  geom_vline(xintercept = 6.5) +
+  geom_vline(xintercept = 9.5)
+```
+```{r TAGroupsViz, echo=FALSE}
+#| fig.cap = "Titratable acidity (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test."
+TA_viz
+```
+
+## TA Percent Acid
+
+$$
+\%\ acid\ (w/v) = \frac{N \cdot V_1 \cdot Eq wt}{V_2 \cdot 1000} \cdot 100
+$$
+
+where  
+
+- N = normality of titrant
+- $V_1$ = volume of titrant
+- Eqwt = equivalent weight of relevant acid
++ Eqwt CGA = 354.31
+- $V_2$ = volume of solution
+
+```{r percent acid calc, include=FALSE}
+head(TAReadings)
+
+N <- 0.1
+EqW <- 354.31
+V2 <- 25
+
+TAReadings$percent_CGA <- (N*TAreadings$mL_NaOH*EqW)/(V2*1000)*100
+
+TA5.17 <- TAReadings %>% filter(Sample %in% c("Whole17-5", "Skim17-5", "Water17-5"))
+TA5.8 <- TAReadings %>% filter(Sample %in% c("Whole8-5", "Skim8-5", "Water8-5"))
+TA10.17 <- TAReadings %>% filter(Sample %in% c("Whole17-10", "Skim17-10", "Water17-10"))
+TA10.8 <- TAReadings %>% filter(Sample %in% c("Whole8-10", "Skim8-10", "Water8-10"))
+
+```
+
+```{r acid aov, include=FALSE}
+aov10.8 <- aov(percent_CGA ~ Sample + Rep, data = TA10.8)
+summary(aov10.8)
+print(LSD.test(aov10.8, trt = "Sample")$groups)
+# marginal difference in %CGA
+
+aov10.17 <- aov(percent_CGA ~ Sample + Rep, data = TA10.17)
+summary(aov10.17)
+print(LSD.test(aov10.17, trt = "Sample")$groups)
+# water significantly less %CGA than milk additions
+
+aov5.8 <- aov(percent_CGA ~ Sample + Rep, data = TA5.8)
+summary(aov5.8)
+print(LSD.test(aov5.8, trt = "Sample")$groups)
+# no difference in TA
+
+aov5.17 <- aov(percent_CGA ~ Sample + Rep, data = TA5.17)
+summary(aov5.17)
+print(LSD.test(aov5.17, trt = "Sample")$groups)
+# water significantly less acidic
+```
+
+- AOV model includes Sample and Rep main effects on percent CGA calculations  
+  + no rep effects seen in anovas (p > 0.05)
+  + at 1:10 and 8% addition, water was significantly different from whole milk addition
+  + at 17% addition (both 1:10 and 1:5), water was significantly different from either milk addition
+
+
+
+```{r acid_AOV, echo=FALSE}
+TASummary
+# same groups as mL NaOH
+```
+
+```{r acid_viz, echo=FALSE}
+TAReadings %>% 
+  filter(Sample %in% coffeeorder) %>% 
+  ggplot(aes(x = factor(Sample, levels = coffeeorder), y = percent_CGA)) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.25, color = "grey") +
+  stat_summary(fun = mean, geom = "point", shape = 19, color = "black") +
+  geom_text(data = TASummary,
+            aes(y = 1, x = Sample,
+            label = groups), color = "black") +   
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(x = "Sample", y = "% CGA (w/v)") +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 1.1)) +
+  geom_vline(xintercept = 3.5) +
+  geom_vline(xintercept = 6.5) +
+  geom_vline(xintercept = 9.5)
+```
+
+```{r CGAGroupsViz, echo=FALSE}
+#| fig.cap = "Percent chlorogenic acid (CGA) (mean +/- standard deviation) of cold brew coffee samples with either skim milk, whole milk, or water added. For example, Skim8-10 has 8% skim milk added to a cold brew coffee at a 1:10 brew strength. Samples within a section that do not share a letter are significantly different as determined by a 2-way ANOVA (sample and rep) and LSD post-hoc test."
+TA_viz
+```
+
+## Correlation with Sour Ratings
+### TA Readings + Sourness
+```{r import sour ratings, include=FALSE}
+# 1:10 Nose Closed
+brew10closedsour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 3) 
+brew10closedsour <- t(brew10closedsour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(brew10closedsour, is.character)
+brew10closedsour[ ,chars] <- as.data.frame(apply(brew10closedsour[,chars],2, as.numeric))
+brew10closedsour <- brew10closedsour %>% rownames_to_column(var = "participant")
+brew10closedsour_ratings <- brew10closedsour %>% select(participant, starts_with("sourness"))
+brew10closedsour_ratings_long <- brew10closedsour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+sample_order10 <- c("sourness_13", "sourness_15", "sourness_14", "sourness_17", "sourness_16", "sourness_18", "sourness_19", "sourness_21", "sourness_20", "sourness_23", "sourness_22", "sourness_24")
+brew10closedsour_ratings_long$coffee <- rep("10", length(brew10closedsour_ratings_long$participant))
+brew10closedsour_ratings_long$cond <- rep("closed", length(brew10closedsour_ratings_long$participant))
+
+
+# 1:10 Nose Opened
+brew10openedSour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 12)
+df10openedSour <- t(brew10openedSour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(df10openedSour, is.character)
+df10openedSour[ ,chars] <- as.data.frame(apply(df10openedSour[,chars],2, as.numeric))
+df10openedSour <- df10openedSour %>% rownames_to_column(var = "participant")
+df10openedSour_ratings <- df10openedSour %>% select(participant, starts_with("sourness"))
+df10openedSour_ratings_long <- df10openedSour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+df10openedSour_ratings_long$coffee <- rep("10", length(df10openedSour_ratings_long$participant))
+df10openedSour_ratings_long$cond <- rep("opened", length(df10openedSour_ratings_long$participant))
+
+# 1:5 Nose Closed
+brew5closedsour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 7) 
+brew5closedsour <- t(brew5closedsour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(brew5closedsour, is.character)
+brew5closedsour[ ,chars] <- as.data.frame(apply(brew5closedsour[,chars],2, as.numeric))
+brew5closedsour <- brew5closedsour %>% rownames_to_column(var = "participant")
+brew5closedsour_ratings <- brew5closedsour %>% select(participant, starts_with("sourness"))
+brew5closedsour_ratings_long <- brew5closedsour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+sample_order5 <- c("sourness_1", "sourness_3", "sourness_2", "sourness_5", "sourness_4", "sourness_6", "sourness_7", "sourness_9", "sourness_8", "sourness_11", "sourness_10", "sourness_12")
+brew5closedsour_ratings_long$coffee <- rep("5", length(brew5closedsour_ratings_long$participant))
+brew5closedsour_ratings_long$cond <- rep("closed", length(brew5closedsour_ratings_long$participant))
+
+# 1:5 Nose Opened
+brew5openedSour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 11)
+df5openedSour <- t(brew5openedSour) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(df5openedSour, is.character)
+df5openedSour[ ,chars] <- as.data.frame(apply(df5openedSour[,chars],2, as.numeric))
+df5openedSour <- df5openedSour %>% rownames_to_column(var = "participant")
+df5openedSour_ratings <- df5openedSour %>% select(participant, starts_with("sourness"))
+df5openedSour_ratings_long <- df5openedSour_ratings %>% 
+  pivot_longer(-participant, names_to = "Sample", values_to = "Intensity")
+df5openedSour_ratings_long$coffee <- rep("5", length(df5openedSour_ratings_long$participant))
+df5openedSour_ratings_long$cond <- rep("opened", length(df5openedSour_ratings_long$participant))
+```
+
+```{r rename samples}
+unique(brew10closedsour_ratings_long$Sample)
+brew10closedsour_ratings_long <- brew10closedsour_ratings_long %>% 
+  mutate(Sample = recode(Sample, "sourness_13" = "Skim17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_14" = "Skim17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_15" = "Whole17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_16" = "Whole17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_17" = "Water17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_18" = "Water17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_19" = "Skim8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_20" = "Skim8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_21" = "Whole8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_22" = "Whole8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_23" = "Water8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_24" = "Water8-10")) 
+
+unique(df10openedSour_ratings_long$Sample)
+df10openedSour_ratings_long <- df10openedSour_ratings_long %>% 
+  mutate(Sample = recode(Sample, "sourness_13" = "Skim17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_14" = "Skim17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_15" = "Whole17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_16" = "Whole17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_17" = "Water17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_18" = "Water17-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_19" = "Skim8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_20" = "Skim8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_21" = "Whole8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_22" = "Whole8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_23" = "Water8-10")) %>% 
+  mutate(Sample = recode(Sample, "sourness_24" = "Water8-10")) 
+
+unique(brew5closedsour_ratings_long$Sample)
+brew5closedsour_ratings_long <- brew5closedsour_ratings_long %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "Skim17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" = "Skim17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "Whole17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" = "Whole17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" = "Water17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" = "Water17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "Skim8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" = "Skim8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "Whole8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" = "Whole8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" = "Water8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" = "Water8-5")) 
+
+unique(df5openedSour_ratings_long$Sample)
+df5openedSour_ratings_long <- df5openedSour_ratings_long %>% 
+  mutate(Sample = recode(Sample, "sourness_1" = "Skim17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_2" = "Skim17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_3" = "Whole17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_4" = "Whole17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_5" = "Water17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_6" = "Water17-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_7" = "Skim8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_8" = "Skim8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_9" = "Whole8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_10" = "Whole8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_11" = "Water8-5")) %>% 
+  mutate(Sample = recode(Sample, "sourness_12" = "Water8-5")) 
+
+colnames(df5openedSour_ratings_long)
+brew10sour <- full_join(brew10closedsour_ratings_long, df10openedSour_ratings_long, by = c("participant", "Sample", "Intensity", "coffee", "cond"))
+brew5sour <- full_join(brew5closedsour_ratings_long, df5openedSour_ratings_long, by = c("participant", "Sample", "Intensity", "coffee", "cond"))
+sourDF <- full_join(brew10sour, brew5sour)
+view(sourDF)
+
+sourTAjoined <- full_join(sourDF, TASummary)
+view(sourTAjoined)
+```
+
+
+```{r sour wrangling, include=FALSE}
+sourclosed_long <- sourclosed %>% pivot_longer(cols = S1:S12, names_to = "Sample", values_to = "Sourness")
+#length(sourclosed$Participant) #30 participants
+coffeelevels
+
+sourclosed_long$SampleName <- rep(c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
+                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10"), 30)
+#length(sourclosed_long$Participant) #360 rows
+sourclosed_long$Condition <- rep("Closed", 360)
+##view(sourclosed_long)
+
+souropen_long <- souropen %>% select(Participant, S1:S12) %>% 
+  pivot_longer(cols = S1:S12, names_to = "Sample", values_to = "Sourness")
+length(souropen$Participant) # 34 participants
+souropen_long$SampleName <- rep(c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
+                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10"), 34)
+souropen_long$Condition <- rep("Open", length(souropen_long$Participant))
+#view(souropen_long)
+
+sourratings <- full_join(sourclosed_long, souropen_long)
+#view(sourratings) #combined data
+```
+
+```{r ta wrangling 2, include=FALSE}
+TASummary
+
+TAMean <- TASummary %>% select(Sample, mL_NaOH, sd) %>% 
+  filter(Sample %in% c("Skim17-5", "Whole17-5", "Skim17-5", "Water17-5", "Whole17-5", "Water17-5",
+                                    "Skim17-10", "Whole17-10", "Skim17-10", "Water17-10", "Whole17-10", "Water17-10")) 
+
+
+
+sourTAjoined %>% 
+```
+
+```{r sour rcorr closed, echo=TRUE}
+sour_to_cor_closed <- sourTAjoined %>% filter(cond == "Closed") %>%  select(mL_NaOH, Intensity) %>% as.matrix()
+(sour_rcorr_closed <- rcorr(sour_to_cor_closed, type = "pearson")) #p = 0.0208
+```
+```{r sour rcorr open, echo=TRUE}
+sour_to_cor_opened <- sourTAjoined %>% filter(Condition == "Open") %>%  select(mL_NaOH, Sourness) %>% as.matrix()
+(sour_rcorr_opened <- rcorr(sour_to_cor_opened, type = "pearson")) #p = 0.0426
+```
+```{r sour_v_NaOH wrangling, include=FALSE}
+sourTAjoined
+
+colnames(sourclosed_long)
+sourClosedSummary <- summarySE(data = sourclosed_long, measurevar = "Sourness", groupvars = "SampleName") %>% select(SampleName, Sourness, sd, se)
+(sourOpenSummary <- summarySE(data = souropen_long, measurevar = "Sourness", groupvars = "SampleName") %>% select(SampleName, Sourness, sd, se))
+
+sourClosedSummary$Condition <- rep("Closed", length(sourClosedSummary$SampleName))
+sourOpenSummary$Condition <- rep("Open", length(sourOpenSummary$SampleName))
+
+sourClosedSummary
+SourSummary <- full_join(sourClosedSummary, sourOpenSummary)
+SourSummary
+
+TAMean3 <- TAMean2 %>% rename(c("sd" = "TA.sd"))
+SourSummary <- full_join(SourSummary, TAMean3)
+SourSummary
+```
+```{r Sour_v_NaOH_Viz, echo=FALSE, fig.cap='Mean sourness intensity ratings plotted against average titratable acidity readings expressed in mL of NaOH. Vertical error bars represent SE of intensity ratings. Horizontal error bars represent SD of titratable acidity readings.'}
+SourSummary %>% 
+  ggplot(aes(x = mL_NaOH, y = Sourness, color = SampleName)) +
+  facet_grid(~Condition) +
+  theme_bw() +
+  geom_errorbar(aes(x = mL_NaOH, ymin = Sourness-se, ymax = Sourness+se), linewidth = .5, width = .25,color = "grey") +
+  geom_errorbarh(aes(xmin = mL_NaOH-TA.sd, xmax = mL_NaOH+TA.sd, y = Sourness), linewidth = .5, height = 0.25, color = "grey") +
+  geom_point(size = 2) +
+  theme(panel.grid.major = element_blank(), # remove grid lines
+        panel.grid.minor = element_blank()) +
+  scale_y_continuous(limits = c(0,10), expand = c(0,0)) +
+  labs(x = "mL NaOH")
+```
+
