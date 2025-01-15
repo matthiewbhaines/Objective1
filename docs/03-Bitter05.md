@@ -616,8 +616,6 @@ mean difference
   + how does this compare to **Figure \@ref(fig:study1WaterCombineRViz)**?
 
 ## Notes {-}
-<input type="checkbox"> examine the participant data  
-  - do panelists need to be excluded because they do not meet inclusion criteria?  
 <input type="checkbox"> update Rindex figures like Chris described  
 <input type="checkbox"> resolve `warnings()`?
 <input type="checkbox"> resolve study 1 figure reference
