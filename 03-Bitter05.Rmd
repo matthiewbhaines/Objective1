@@ -130,6 +130,37 @@ RIndex <- function(a,b,c,d,e,f,n) {
 }
 ```
 
+### Participant Data
+```{r study1Meta}
+Study3Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 6) %>% clean_names()
+colnames(Study3Meta)
+
+Study3Meta %>% filter(consumption == "6") #osu24
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+- remove one participant (F) because they did not meet inclusion criteria 
+
+```{r}
+describe(Study3Meta)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study3Meta %>% count(gender) # 10 males, 24 females
+
+Study3Meta %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study3Meta %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study3closed data wrangling, include=FALSE}
 brew5closed <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 5) 
 # ~/ not necessary when in working directory, just use "filename.xlsx"
@@ -141,6 +172,8 @@ df5closed[ ,chars] <- as.data.frame(apply(df5closed[,chars],2, as.numeric))
 
 df5closed <- df5closed %>% rownames_to_column(var = "participant")
 # create participant column
+
+df5closed <- df5closed %>% filter(participant != "osu24")
 ```
 
 ### R Index  
@@ -152,14 +185,14 @@ Rcriti(length(df5closed$participant), length(df5closed$participant), 0.05, 2)
 ```
 ```{r study3closed 8% milk, include=FALSE}
 df5closed %>% select(comparison_7_v_9_more_bitter, confidence_9) %>% count(comparison_7_v_9_more_bitter, confidence_9)
-Milk5S8C <- RIndex(12,4,2,1,3,10,length(df5closed$participant)) 
+Milk5S8C <- RIndex(12,4,2,1,3,9,length(df5closed$participant)) 
 ```
 
 - no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk5S8C)[1], 2)`, p > 0.05)  
 
 ```{r study3closed 17% milk, include=FALSE}
 df5closed %>% select(comparison_1_v_3_more_bitter, confidence_3) %>% count(comparison_1_v_3_more_bitter, confidence_3)
-Milk5S17C <- RIndex(13,3,0,3,3,10,length(df5closed$participant))
+Milk5S17C <- RIndex(13,3,0,3,3,9,length(df5closed$participant))
 ```
 
 - no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = `r round(as.numeric(Milk5S17C)[1], 2)`, p > 0.05)  
@@ -214,10 +247,10 @@ Rcriti(length(df5closed$participant), length(df5closed$participant), 0.05, 1)
 
 ```{r study3closed 8% water, include=FALSE}
 df5closed %>% select(comparison_8_v_11_more_bitter, confidence_11) %>% count(comparison_8_v_11_more_bitter, confidence_11)
-water5S8C <- RIndex(12,3,2,5,2,8,length(df5closed$participant))
+water5S8C <- RIndex(12,3,2,4,2,8,length(df5closed$participant))
 
 df5closed %>% select(comparison_10_v_12_more_bitter, confidence_12) %>% count(comparison_10_v_12_more_bitter, confidence_12)
-water5W8C <- RIndex(12,3,1,2,4,10,length(df5closed$participant))
+water5W8C <- RIndex(12,3,1,1,4,10,length(df5closed$participant))
 ```
 
 - no discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(as.numeric(water5S8C)[1], 2)`, p > 0.05)  
@@ -226,10 +259,10 @@ water5W8C <- RIndex(12,3,1,2,4,10,length(df5closed$participant))
 
 ```{r study3closed 17 water, include=FALSE}
 df5closed %>% select(comparison_2_v_5_more_bitter, confidence_5) %>% count(comparison_2_v_5_more_bitter, confidence_5)
-water5S17C <- RIndex(7,6,5,1,8,5,length(df5closed$participant))
+water5S17C <- RIndex(7,6,4,1,8,5,length(df5closed$participant))
 
 df5closed %>% select(comparison_4_v_6_more_bitter, confidence_6) %>% count(comparison_4_v_6_more_bitter, confidence_6)
-water5W17C <- RIndex(10,3,1,3,3,12,length(df5closed$participant))
+water5W17C <- RIndex(9,3,1,3,3,12,length(df5closed$participant))
 ```
 
 - no discrimination between the 17% skim milk and 17% water samples (R Index = `r round(as.numeric(water5S17C)[1], 2)`, p > 0.05)  
@@ -342,11 +375,11 @@ t.test(df5closed$bitterness_6, df5closed$bitterness_4,
 
 ```{r study3closed viz wrangling, include=FALSE}
 df5closed_ratings_long2 <- df5closed_ratings_long
-length(df5closed$participant) # 32
-length(df5closed_ratings_long2$participant) # 384
-df5closed_ratings_long2$condition <- rep("Closed", 384)
-df5closed_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 64) 
-df5closed_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 32)
+length(df5closed$participant) # 31
+length(df5closed_ratings_long2$participant) # 372
+df5closed_ratings_long2$condition <- rep("Closed", 372)
+df5closed_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 62) 
+df5closed_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 31)
 df5closed_ratings_long2$sample2 <- df5closed_ratings_long2$Sample
 
 df5closed_ratings_trim <- df5closed_ratings_long2 %>% 
@@ -413,13 +446,13 @@ study3closedMilkRatings <- df5closed_ratings_trim %>%
   scale_x_discrete(labels = c("Skim", "Whole", "Whole", "Whole")) +
   labs(y = "Bitterness Intensity")
 ```
-
 ```{r study3ClosedMilkRatingsViz, echo=FALSE, warning=FALSE, message=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
 plot_grid(study3closedMilkRViz, study3closedMilkRatings + theme(strip.background.x = element_blank(), 
         strip.text.x = element_blank()), ncol = 1)
 #may want to match the milk rindex viz to the ratings viz for consistency
 ```
+
 ```{r study3closedWaterRatings, echo=FALSE}
 study3closedWaterRatings <- df5closed_ratings_trim %>% 
   filter(Sample %in% c("B2", "B5", "B4", "B6")) %>% 
@@ -442,7 +475,6 @@ study3closedWaterRatings <- df5closed_ratings_trim %>%
   scale_x_discrete(labels = c("Skim", "Water", "Whole", "Water")) +
   labs(y = "Bitterness Intensity")
 ```
-
 ```{r study3ClosedWaterRatingsViz, echo=FALSE, warning=FALSE, message=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars."
 plot_grid(study3closedWaterRViz, study3closedWaterRatings + theme(strip.background.x = element_blank(), 
@@ -451,6 +483,35 @@ plot_grid(study3closedWaterRViz, study3closedWaterRatings + theme(strip.backgrou
 ```
 
 ## Nose Open Condition
+### Participant Data 
+```{r study1Meta}
+Study3MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study3MetaOpen)
+
+Study3MetaOpen %>% filter(consumption == "6") 
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+```{r}
+describe(Study3MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study3MetaOpen %>% count(gender) # 10 males, 24 females
+
+Study3MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study3MetaOpen %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study3open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
 brew5opened <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 9)
 
