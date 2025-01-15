@@ -129,6 +129,35 @@ RIndex <- function(a,b,c,d,e,f,n) {
 }
 ```
 
+### Participant Data
+```{r study1Meta}
+Study4Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 8) %>% clean_names()
+colnames(Study4Meta)
+
+Study4Meta %>% filter(consumption == "6") 
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+```{r}
+describe(Study4Meta)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study4Meta %>% count(gender) # 10 males, 24 females
+
+Study4Meta %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study4Meta %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study4closed data wrangling, include=FALSE}
 brew5closedsour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 7) 
 # ~/ not necessary when in working directory, just use "filename.xlsx"
@@ -487,6 +516,35 @@ plot_grid(study4closedWaterRViz, study4closedWaterRatings + theme(strip.backgrou
   + What are some explanations that the 8% whole milk addition wasn't distinguished?  
 
 ## Nose Open Condition
+### Participant Data 
+```{r study1Meta}
+Study4MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study4MetaOpen)
+
+Study4MetaOpen %>% filter(consumption == "6") 
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+```{r}
+describe(Study4MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study4MetaOpen %>% count(gender) # 10 males, 24 females
+
+Study4MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study4MetaOpen %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study4open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
 brew5openedSour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 11)
 
