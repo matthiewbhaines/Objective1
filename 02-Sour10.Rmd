@@ -119,6 +119,40 @@ RIndex <- function(a,b,c,d,e,f,n) {
 }
 ```
 
+### Participant Data 
+```{r study2closedMeta}
+Study1Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
+colnames(Study1Meta)
+
+Study1Meta %>% filter(consumption == "6") #osu27
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
+
+```{r study2closed characteristics}
+Study1MetaInc <- Study1Meta %>% filter(panelist_code != "osu27")
+describe(Study1MetaInc)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study1MetaInc %>% count(gender) # 11 males, 18 females
+
+Study1MetaInc %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study1MetaInc %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+
+### R Index  
 ```{r study2closed data wrangling, include=FALSE}
 brew10closedsour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 3) 
 # ~/ not necessary when in working directory, just use "filename.xlsx"
@@ -130,10 +164,11 @@ brew10closedsour[ ,chars] <- as.data.frame(apply(brew10closedsour[,chars],2, as.
 
 brew10closedsour <- brew10closedsour %>% rownames_to_column(var = "participant")
 # create participant column
+
+brew10closedsour <- brew10closedsour %>% filter(participant != "osu27")
+
 ```
 
-### R Index  
- 
 The critical value for a 2-tailed test is **`r round(Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.05, 1)[2],2)`**.  
 
 ```{r study2closed rindex milks, echo=FALSE, include=FALSE}
@@ -141,14 +176,14 @@ Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant
 ```
 ```{r study2closed 8% milk, include=FALSE}
 brew10closedsour %>% select(comparison_19_v_21_more_sour, confidence) %>% count(comparison_19_v_21_more_sour, confidence)
-Milk10S8CSour <- RIndex(6,6,3,1,5,9,length(brew10closedsour$participant)) 
+Milk10S8CSour <- RIndex(6,6,3,1,5,8,length(brew10closedsour$participant)) 
 ```
 
 - no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8CSour)[1], 2)`, p > 0.05)  
 
 ```{r study2closed 17% milk, include=FALSE}
 brew10closedsour %>% select(comparison_13_v_15_more_sour, confidence_15) %>% count(comparison_13_v_15_more_sour, confidence_15)
-Milk10S17CSour <- RIndex(8,4,3,3,5,7,length(brew10closedsour$participant))
+Milk10S17CSour <- RIndex(7,4,3,3,5,7,length(brew10closedsour$participant))
 ```
 
 - no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = `r round(as.numeric(Milk10S17CSour)[1], 2)`, p > 0.05)  
@@ -205,11 +240,11 @@ Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant
 
 ```{r study2closed 8% water, include=FALSE}
 brew10closedsour %>% select(comparison_20_v_23_more_sour, confidence_23) %>% count(comparison_20_v_23_more_sour, confidence_23)
-water10S8CSour <- RIndex(2,3,2,3,1,19,length(brew10closedsour$participant))
+water10S8CSour <- RIndex(2,3,2,3,1,18,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
 
 brew10closedsour %>% select(comparison_22_v_24_more_sour, confidence_24) %>% count(comparison_22_v_24_more_sour, confidence_24)
-water10W8CSour <- RIndex(5,3,1,1,3,17,length(brew10closedsour$participant))
+water10W8CSour <- RIndex(4,3,1,1,3,17,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
 ```
 
@@ -219,11 +254,11 @@ Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant
 
 ```{r study2closed 17 water, include=FALSE}
 brew10closedsour %>% select(comparison_14_v_17_more_sour, confidence_17) %>% count(comparison_14_v_17_more_sour, confidence_17)
-water10S17CSour <- RIndex(5,0,0,1,4,20,length(brew10closedsour$participant))
+water10S17CSour <- RIndex(5,0,0,1,4,19,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
 
 brew10closedsour %>% select(comparison_16_v_18_more_sour, confidence_18) %>% count(comparison_16_v_18_more_sour, confidence_18)
-water10W17CSour <- RIndex(3,2,2,0,1,22,length(brew10closedsour$participant))
+water10W17CSour <- RIndex(3,2,2,0,1,21,length(brew10closedsour$participant))
 Rcriti(length(brew10closedsour$participant), length(brew10closedsour$participant), 0.001, 1)
 ```
 
@@ -347,11 +382,11 @@ paired = TRUE, alternative = "greater") #*
 
 ```{r study2closed viz wrangling, include=FALSE}
 brew10closedsour_ratings_long2 <- brew10closedsour_ratings_long
-length(brew10closedsour$participant) # 30
-length(brew10closedsour_ratings_long2$participant) # 360
-brew10closedsour_ratings_long2$condition <- rep("Closed", 360)
-brew10closedsour_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 60) 
-brew10closedsour_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 30)
+length(brew10closedsour$participant) # 29
+length(brew10closedsour_ratings_long2$participant) # 348
+brew10closedsour_ratings_long2$condition <- rep("Closed", 348)
+brew10closedsour_ratings_long2$addition <- rep(c("Skim", "Whole", "Skim", "Water", "Whole", "Water"), 58) 
+brew10closedsour_ratings_long2$percent <- rep(c(rep("17% Addition", 6), rep("8% Addition", 6)), 29)
 brew10closedsour_ratings_long2$sample2 <- brew10closedsour_ratings_long2$Sample
 
 brew10closedsour_ratings_trim <- brew10closedsour_ratings_long2 %>% 
@@ -468,6 +503,35 @@ plot_grid(study2closedWaterRViz, study2closedWaterRatings + theme(strip.backgrou
 - discrimination seen between when water and milk was added to the cold brew (see Figure \@ref(fig:study2ClosedWaterRatingsViz))
 
 ## Nose Open Condition
+### Participant Data 
+```{r study1Meta}
+Study1MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study1MetaOpen)
+
+Study1MetaOpen %>% filter(consumption == "6") 
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+```{r}
+describe(Study1MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study1MetaOpen %>% count(gender) # 10 males, 24 females
+
+Study1MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study1MetaOpen %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study2open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
 brew10openedSour <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 12)
 
