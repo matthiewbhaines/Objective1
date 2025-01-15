@@ -38,19 +38,16 @@ library(knitr)
 library(bookdown)
 ```
 
-## Participant Data
-```{r study1Meta}
+## Nose Closed Condition
+### Participant Data
+```{r study1MetaClosed}
 Study1Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
 colnames(Study1Meta)
 
 Study1Meta %>% filter(consumption == "6") #osu27
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
-```
 
-- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
-
-```{r}
 Study1MetaInc <- Study1Meta %>% filter(panelist_code != "osu27")
 describe(Study1MetaInc)[2,] %>% select(mean, sd, median, min, max) #age
 
@@ -70,7 +67,8 @@ Study1MetaInc %>% count(consumption)
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
 ```
 
-## Nose Closed Condition
+- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
+
 ```{r study1Rcriti, include=FALSE}
 # R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
 # It recreates a ROC (receiver operating characteristic) curve based on choice/confidence data.
@@ -503,6 +501,33 @@ plot_grid(study1closedWaterRViz, study1ClosedWaterRatings + theme(strip.backgrou
 - while there was significance in discrimination between the whole milk/water at the 8% level, they were not reflected in the ratings (Figure \@ref(fig:study1ClosedWaterRatingsViz)).
 
 ## Nose Open Condition
+### Participant Data
+```{r study1MetaOpen}
+Study1MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study1MetaOpen)
+
+Study1MetaOpen %>% filter(consumption == "6") 
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+
+describe(Study1MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study1MetaOpen %>% count(gender) # 10 males, 24 females
+
+Study1MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study1MetaOpen %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 ```{r study1open data wrangling, include=FALSE, warning=FALSE, message=FALSE}
 brew10opened <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 10)
 
@@ -877,10 +902,6 @@ Water10RCombineViz <- Water10RCombine %>%
               annotation = c("< 0.01")) +
   geom_signif(data = compareB,
               y_position = 0.95, xmin = 0.8, xmax = 1.2,
-              tip_length = 0,
-              annotation = c("< 0.05")) +
-  geom_signif(data = compareC,
-              y_position = 0.95, xmin = 1.8, xmax = 2.2,
               tip_length = 0,
               annotation = c("< 0.05")) +
   geom_text(data = rcritical_10WOp,

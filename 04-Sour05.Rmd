@@ -26,6 +26,7 @@ library(Rmisc) # summarySE()
 library(agricolae) #LSD test
 library(janitor) #clean_names()
 library(tibble)
+library(psych)
 
 # correlations
 library(Hmisc)
@@ -130,17 +131,15 @@ RIndex <- function(a,b,c,d,e,f,n) {
 ```
 
 ### Participant Data
-```{r study1Meta}
+```{r study4MetaClosed}
 Study4Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 8) %>% clean_names()
 colnames(Study4Meta)
 
 Study4Meta %>% filter(consumption == "6") 
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
-```
 
-```{r}
-describe(Study4Meta)[2,] %>% select(mean, sd, median, min, max) #age
+describe(Study4Meta)[2, ] # %>% select(mean, sd, median, min, max) #age
 
 Study4Meta %>% count(gender) # 10 males, 24 females
 
@@ -517,18 +516,16 @@ plot_grid(study4closedWaterRViz, study4closedWaterRatings + theme(strip.backgrou
 
 ## Nose Open Condition
 ### Participant Data 
-```{r study1Meta}
+```{r study4MetaOpen}
 Study4MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
 colnames(Study4MetaOpen)
 
 Study4MetaOpen %>% filter(consumption == "6") 
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
-```
 
-```{r}
-describe(Study4MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
-
+describe(Study4MetaOpen)[2, ] # %>% select(mean, sd, median, min, max) #age
+ 
 Study4MetaOpen %>% count(gender) # 10 males, 24 females
 
 Study4MetaOpen %>% group_by(sweetener, whitener) %>% 

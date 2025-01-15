@@ -25,6 +25,7 @@ library(Rmisc) # summarySE()
 library(agricolae) #LSD test
 library(janitor) #clean_names()
 library(tibble)
+library(psych)
 
 #visualizations
 library(ggplot2) # plotting
@@ -120,24 +121,20 @@ RIndex <- function(a,b,c,d,e,f,n) {
 ```
 
 ### Participant Data 
-```{r study2closedMeta}
-Study1Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
-colnames(Study1Meta)
+```{r study2MetaClosed}
+Study2Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
+colnames(Study2Meta)
 
-Study1Meta %>% filter(consumption == "6") #osu27
+Study2Meta %>% filter(consumption == "6") #osu27
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
-```
 
-- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
+Study2MetaInc <- Study2Meta %>% filter(panelist_code != "osu27")
+describe(Study2MetaInc)[2,] %>% select(mean, sd, median, min, max) #age
 
-```{r study2closed characteristics}
-Study1MetaInc <- Study1Meta %>% filter(panelist_code != "osu27")
-describe(Study1MetaInc)[2,] %>% select(mean, sd, median, min, max) #age
+Study2MetaInc %>% count(gender) # 11 males, 18 females
 
-Study1MetaInc %>% count(gender) # 11 males, 18 females
-
-Study1MetaInc %>% group_by(sweetener, whitener) %>% 
+Study2MetaInc %>% group_by(sweetener, whitener) %>% 
   tally() %>% 
   spread(whitener, n) %>% 
   replace(is.na(.), 0)
@@ -146,11 +143,12 @@ Study1MetaInc %>% group_by(sweetener, whitener) %>%
 # 21 - sweeten, no whiten
 # 22 - black coffee drinker
 
-Study1MetaInc %>% count(consumption)
+Study2MetaInc %>% count(consumption)
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
 ```
 
+- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
 
 ### R Index  
 ```{r study2closed data wrangling, include=FALSE}
@@ -504,21 +502,19 @@ plot_grid(study2closedWaterRViz, study2closedWaterRatings + theme(strip.backgrou
 
 ## Nose Open Condition
 ### Participant Data 
-```{r study1Meta}
-Study1MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
-colnames(Study1MetaOpen)
+```{r study2MetaOpen}
+study2MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(study2MetaOpen)
 
-Study1MetaOpen %>% filter(consumption == "6") 
+study2MetaOpen %>% filter(consumption == "6") 
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
-```
 
-```{r}
-describe(Study1MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+describe(study2MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
 
-Study1MetaOpen %>% count(gender) # 10 males, 24 females
+study2MetaOpen %>% count(gender) # 10 males, 24 females
 
-Study1MetaOpen %>% group_by(sweetener, whitener) %>% 
+study2MetaOpen %>% group_by(sweetener, whitener) %>% 
   tally() %>% 
   spread(whitener, n) %>% 
   replace(is.na(.), 0)
@@ -527,7 +523,7 @@ Study1MetaOpen %>% group_by(sweetener, whitener) %>%
 # 21 - sweeten, no whiten
 # 22 - black coffee drinker
 
-Study1MetaOpen %>% count(consumption)
+study2MetaOpen %>% count(consumption)
 # 1 - daily; 2 - 2-3/wk; 3- 1/wk
 # 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
 ```
@@ -544,7 +540,6 @@ df10openedSour <- df10openedSour %>% rownames_to_column(var = "participant")
 
 ### R Index
 The R critical value for a 2-tailed test (milk comparisons) is: **`r Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.05, 2)[2]`**.  
-
 ```{r study2opened rindex milks, echo=FALSE, include=FALSE}
 Rcriti(length(df10openedSour$participant), length(df10openedSour$participant), 0.05, 2)
 ```
