@@ -21,6 +21,122 @@ Some interpretations of expected data would be:
 
 
 
+### Participant Data
+
+``` r
+Study3Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 6) %>% clean_names()
+colnames(Study3Meta)
+```
+
+```
+##  [1] "panelist_code"        "age"                  "gender"              
+##  [4] "indian_alaska_native" "asian"                "black"               
+##  [7] "white"                "latinx"               "other"               
+## [10] "other_comment"        "consumption"          "sweetener"           
+## [13] "sweetener_comment"    "whitener"             "whitener_comment"    
+## [16] "quantity_whitener"
+```
+
+``` r
+Study3Meta %>% filter(consumption == "6") #osu24
+```
+
+```
+## # A tibble: 1 × 16
+##   panelist_code   age gender indian_alaska_native asian black white latinx other
+##   <chr>         <dbl>  <dbl>                <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>
+## 1 osu24            27      2                    0     1     0     0      0     0
+## # ℹ 7 more variables: other_comment <chr>, consumption <dbl>, sweetener <dbl>,
+## #   sweetener_comment <chr>, whitener <dbl>, whitener_comment <chr>,
+## #   quantity_whitener <dbl>
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+
+describe(Study3Meta)[2, ] #%>% select(mean, sd, median, min, max) #age
+```
+
+```
+## Study3Meta 
+## 
+##  1  Variables      32  Observations
+## --------------------------------------------------------------------------------
+## age 
+##        n  missing distinct     Info     Mean  pMedian      Gmd      .05 
+##       32        0       13    0.987    27.09       26    5.607    22.00 
+##      .10      .25      .50      .75      .90      .95 
+##    23.00    24.00    25.00    29.00    32.00    34.35 
+##                                                                             
+## Value         21    22    23    24    25    26    27    29    31    32    33
+## Frequency      1     2     4     6     4     4     2     2     2     2     1
+## Proportion 0.031 0.062 0.125 0.188 0.125 0.125 0.062 0.062 0.062 0.062 0.031
+##                       
+## Value         36    55
+## Frequency      1     1
+## Proportion 0.031 0.031
+## 
+## For the frequency table, variable is rounded to the nearest 0
+## --------------------------------------------------------------------------------
+```
+
+``` r
+Study3Meta %>% count(gender) # 10 males, 24 females
+```
+
+```
+## # A tibble: 2 × 2
+##   gender     n
+##    <dbl> <int>
+## 1      1     9
+## 2      2    23
+```
+
+``` r
+Study3Meta %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+```
+
+```
+## # A tibble: 2 × 3
+## # Groups:   sweetener [2]
+##   sweetener   `1`   `2`
+##       <dbl> <int> <int>
+## 1         1    21     1
+## 2         2     8     2
+```
+
+``` r
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study3Meta %>% count(consumption)
+```
+
+```
+## # A tibble: 5 × 2
+##   consumption     n
+##         <dbl> <int>
+## 1           1    20
+## 2           2     6
+## 3           3     2
+## 4           4     3
+## 5           6     1
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+- remove one participant (F) because they did not meet inclusion criteria 
+
+
 
 
 ### R Index  
@@ -30,11 +146,11 @@ The critical value for a 2-tailed test is **0.62**.
 
 
 
-- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = 0.55, p > 0.05)  
+- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = 0.57, p > 0.05)  
 
 
 
-- no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = 0.56, p > 0.05)  
+- no discrimination between 17% skim milk or 17% whole milk added to coffee, (R Index = 0.58, p > 0.05)  
 
 
 <div class="figure">
@@ -47,14 +163,14 @@ For the paired comparisons between milk and water, we hypothesized that the addi
 
 
 
-- no discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = 0.58, p > 0.05)  
+- no discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = 0.59, p > 0.05)  
 
-- no discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = 0.53, p > 0.05)   
+- no discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = 0.54, p > 0.05)   
 
 
 
-- no discrimination between the 17% skim milk and 17% water samples (R Index = 0.54, p > 0.05)  
-- no discrimination between the 17% whole milk and 17% water samples (R Index = 0.54, p > 0.05)  
+- no discrimination between the 17% skim milk and 17% water samples (R Index = 0.53, p > 0.05)  
+- no discrimination between the 17% whole milk and 17% water samples (R Index = 0.57, p > 0.05)  
 
 
 <div class="figure">
@@ -75,18 +191,18 @@ Table: (\#tab:study3KableClosedRatings)Bitterness intensities, standard deviatio
 
 |Sample        | Intensity|       sd|        se|
 |:-------------|---------:|--------:|---------:|
-|bitterness_1  |  5.625000| 1.995964| 0.3528399|
-|bitterness_3  |  5.812500| 1.886924| 0.3335643|
-|bitterness_2  |  5.929688| 2.133861| 0.3772170|
-|bitterness_5  |  5.875000| 2.117515| 0.3743274|
-|bitterness_4  |  5.612500| 2.389189| 0.4223530|
-|bitterness_6  |  6.031250| 2.082715| 0.3681755|
-|bitterness_7  |  6.562500| 2.143068| 0.3788445|
-|bitterness_9  |  5.968750| 1.963118| 0.3470334|
-|bitterness_8  |  6.312500| 1.929190| 0.3410358|
-|bitterness_11 |  5.890625| 2.058556| 0.3639047|
-|bitterness_10 |  5.945312| 2.111541| 0.3732713|
-|bitterness_12 |  6.125000| 2.355501| 0.4163978|
+|bitterness_1  |  5.548387| 1.980551| 0.3557174|
+|bitterness_3  |  5.709677| 1.824711| 0.3277278|
+|bitterness_2  |  5.830645| 2.093031| 0.3759195|
+|bitterness_5  |  5.774193| 2.072996| 0.3723210|
+|bitterness_4  |  5.503226| 2.345987| 0.4213517|
+|bitterness_6  |  6.000000| 2.109502| 0.3788778|
+|bitterness_7  |  6.483871| 2.131056| 0.3827489|
+|bitterness_9  |  5.903226| 1.959674| 0.3519679|
+|bitterness_8  |  6.225807| 1.896658| 0.3406498|
+|bitterness_11 |  5.758064| 1.948807| 0.3500161|
+|bitterness_10 |  5.846774| 2.070303| 0.3718375|
+|bitterness_12 |  6.000000| 2.284002| 0.4102189|
 
 
 
@@ -100,39 +216,39 @@ t.test(df5closed$bitterness_7, df5closed$bitterness_9,
 	Paired t-test
 
 data:  df5closed$bitterness_7 and df5closed$bitterness_9
-t = 1.7347, df = 31, p-value = 0.09273
+t = 1.6437, df = 30, p-value = 0.1107
 alternative hypothesis: true mean difference is not equal to 0
 95 percent confidence interval:
- -0.1043359  1.2918359
+ -0.1407808  1.3020711
 sample estimates:
 mean difference 
-        0.59375 
+      0.5806452 
 t.test(df5closed$bitterness_11, df5closed$bitterness_8, 
        paired = TRUE, alternative = "greater")
 
 	Paired t-test
 
 data:  df5closed$bitterness_11 and df5closed$bitterness_8
-t = -1.2552, df = 31, p-value = 0.8906
+t = -1.3602, df = 30, p-value = 0.9081
 alternative hypothesis: true mean difference is greater than 0
 95 percent confidence interval:
- -0.9917266        Inf
+ -1.051375       Inf
 sample estimates:
 mean difference 
-      -0.421875 
+     -0.4677419 
 t.test(df5closed$bitterness_12, df5closed$bitterness_10, 
        paired = TRUE, alternative = "greater")
 
 	Paired t-test
 
 data:  df5closed$bitterness_12 and df5closed$bitterness_10
-t = 0.49488, df = 31, p-value = 0.3121
+t = 0.40969, df = 30, p-value = 0.3425
 alternative hypothesis: true mean difference is greater than 0
 95 percent confidence interval:
- -0.4359375        Inf
+ -0.4815498        Inf
 sample estimates:
 mean difference 
-      0.1796875 
+      0.1532258 
 
 t.test(df5closed$bitterness_1, df5closed$bitterness_3, 
        paired = TRUE, alternative = "two.sided")
@@ -140,49 +256,48 @@ t.test(df5closed$bitterness_1, df5closed$bitterness_3,
 	Paired t-test
 
 data:  df5closed$bitterness_1 and df5closed$bitterness_3
-t = -0.5172, df = 31, p-value = 0.6087
+t = -0.43191, df = 30, p-value = 0.6689
 alternative hypothesis: true mean difference is not equal to 0
 95 percent confidence interval:
- -0.9268803  0.5518803
+ -0.9239511  0.6013704
 sample estimates:
 mean difference 
-        -0.1875 
+     -0.1612903 
 t.test(df5closed$bitterness_5, df5closed$bitterness_2, 
        paired = TRUE, alternative = "greater")
 
 	Paired t-test
 
 data:  df5closed$bitterness_5 and df5closed$bitterness_2
-t = -0.18853, df = 31, p-value = 0.5742
+t = -0.18844, df = 30, p-value = 0.5741
 alternative hypothesis: true mean difference is greater than 0
 95 percent confidence interval:
- -0.5465046        Inf
+ -0.5649106        Inf
 sample estimates:
 mean difference 
-     -0.0546875 
+    -0.05645161 
 t.test(df5closed$bitterness_6, df5closed$bitterness_4, 
        paired = TRUE, alternative = "greater")
 
 	Paired t-test
 
 data:  df5closed$bitterness_6 and df5closed$bitterness_4
-t = 1.0465, df = 31, p-value = 0.1517
+t = 1.2255, df = 30, p-value = 0.115
 alternative hypothesis: true mean difference is greater than 0
 95 percent confidence interval:
- -0.2597325        Inf
+ -0.1912165        Inf
 sample estimates:
 mean difference 
-        0.41875 
+      0.4967742 
 ```
 
-- Ratings between the 8% skim milk and 8% whole milk were NSD (t = 1.735, p = 0.09) 
-- Ratings between the 8% skim milk and 8% water were NSD (t = -1.255, p = 0.89) 
-- Ratings between the 8% whole milk and 8% water were NSD (t = 0.495, p = 0.31) 
+- Ratings between the 8% skim milk and 8% whole milk were NSD (t = 1.644, p = 0.11) 
+- Ratings between the 8% skim milk and 8% water were NSD (t = -1.36, p = 0.91) 
+- Ratings between the 8% whole milk and 8% water were NSD (t = 0.41, p = 0.34) 
 
-- Ratings between the 17% skim milk and 17% whole milk were NSD (t = -0.517, p = 0.61)
-- Ratings between the 17% skim milk and 17% water were NSD (t = -0.189, p = 0.57)  
-- Ratings between the 17% whole milk and 17% water were NSD (t = 1.046, p = 0.15) 
-
+- Ratings between the 17% skim milk and 17% whole milk were NSD (t = -0.432, p = 0.67)
+- Ratings between the 17% skim milk and 17% water were NSD (t = -0.188, p = 0.57)  
+- Ratings between the 17% whole milk and 17% water were NSD (t = 1.226, p = 0.11) 
 
 
 
@@ -199,6 +314,118 @@ mean difference
 </div>
 
 ## Nose Open Condition
+### Participant Data 
+
+``` r
+Study3MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study3MetaOpen)
+```
+
+```
+##  [1] "panelist_code"         "age"                   "gender"               
+##  [4] "indian_alaskan"        "asian_indian_islander" "black"                
+##  [7] "hispanic_latino"       "white"                 "other"                
+## [10] "race_comment"          "consumption"           "sweetener"            
+## [13] "sweetener_comments"    "whitener"              "whitener_comments"    
+## [16] "how_white"
+```
+
+``` r
+Study3MetaOpen %>% filter(consumption == "6") 
+```
+
+```
+## # A tibble: 0 × 16
+## # ℹ 16 variables: panelist_code <chr>, age <dbl>, gender <dbl>,
+## #   indian_alaskan <dbl>, asian_indian_islander <dbl>, black <dbl>,
+## #   hispanic_latino <dbl>, white <dbl>, other <dbl>, race_comment <chr>,
+## #   consumption <dbl>, sweetener <dbl>, sweetener_comments <chr>,
+## #   whitener <dbl>, whitener_comments <chr>, how_white <dbl>
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+
+describe(Study3MetaOpen)[2, ] #%>% select(mean, sd, median, min, max) #age
+```
+
+```
+## Study3MetaOpen 
+## 
+##  1  Variables      34  Observations
+## --------------------------------------------------------------------------------
+## age 
+##        n  missing distinct     Info     Mean  pMedian      Gmd      .05 
+##       34        0       15    0.991    29.15       27    8.323    22.65 
+##      .10      .25      .50      .75      .90      .95 
+##    23.00    24.00    26.00    30.00    32.70    41.20 
+##                                                                             
+## Value         22    23    24    25    26    27    28    29    30    31    32
+## Frequency      2     4     5     5     2     2     2     2     2     2     2
+## Proportion 0.059 0.118 0.147 0.147 0.059 0.059 0.059 0.059 0.059 0.059 0.059
+##                                   
+## Value         33    37    49    85
+## Frequency      1     1     1     1
+## Proportion 0.029 0.029 0.029 0.029
+## 
+## For the frequency table, variable is rounded to the nearest 0
+## --------------------------------------------------------------------------------
+```
+
+``` r
+Study3MetaOpen %>% count(gender) # 10 males, 24 females
+```
+
+```
+## # A tibble: 2 × 2
+##   gender     n
+##    <dbl> <int>
+## 1      1    10
+## 2      2    24
+```
+
+``` r
+Study3MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+```
+
+```
+## # A tibble: 2 × 3
+## # Groups:   sweetener [2]
+##   sweetener   `1`   `2`
+##       <dbl> <int> <int>
+## 1         1    17     1
+## 2         2    11     5
+```
+
+``` r
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study3MetaOpen %>% count(consumption)
+```
+
+```
+## # A tibble: 5 × 2
+##   consumption     n
+##         <dbl> <int>
+## 1           1    18
+## 2           2    10
+## 3           3     1
+## 4           4     3
+## 5           5     2
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
 
 
 ### R Index
