@@ -178,3 +178,408 @@ For the paired comparisons between milk and water, we hypothesized that the addi
       + *01092025*: could fat be creating an inhibitive coating on the tongue where bitter compounds can't connect to the receptors?
       +*01142025*: the skim milk being perceived as more bitter could be a type I error, a false positive  
       + *02032025*: it is counter to a physicochemical-based hypothesis, it is also unintuitive why significance is only seen at an 8% level (marginal with skim milk being more bitter than water (cf. @keastModificationBitternessCaffeine2008), the whole milk being less bitter than water)
+
+### Ratings  
+The paired comparison will only show which sample is more bitter (or discriminated against), without showing a magnitude of the difference. Thus, bitterness intensity ratings were recorded as well. They will be analyzed by paired t-test with a Bonferroni correction against multiple comparisons.  
+
+
+
+
+Table: (\#tab:study1-kable-closed-ratings)Bitterness intensities and standard error of cold brew coffee samples. Each 2 rows represent the two samples presented in a paired comparison format.
+
+|Sample        | Intensity|        se|
+|:-------------|---------:|---------:|
+|bitterness_13 |  5.603448| 0.4034788|
+|bitterness_15 |  5.655172| 0.4404875|
+|bitterness_14 |  5.196552| 0.4185797|
+|bitterness_17 |  5.344828| 0.3412375|
+|bitterness_16 |  5.068966| 0.3881909|
+|bitterness_18 |  5.327586| 0.3529222|
+|bitterness_19 |  6.344828| 0.3986611|
+|bitterness_21 |  5.637931| 0.4091748|
+|bitterness_20 |  6.000000| 0.3292026|
+|bitterness_23 |  5.327586| 0.4003353|
+|bitterness_22 |  5.568966| 0.3610706|
+|bitterness_24 |  5.724138| 0.3928127|
+
+
+
+The Bonferroni corrected $\alpha$ would be **0.0167**.
+
+
+``` r
+t.test(df10closed$bitterness_19, df10closed$bitterness_21, 
+       paired = TRUE, alternative = "two.sided") 
+
+	Paired t-test
+
+data:  df10closed$bitterness_19 and df10closed$bitterness_21
+t = 1.6918, df = 28, p-value = 0.1018
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -0.1489837  1.5627768
+sample estimates:
+mean difference 
+      0.7068966 
+t.test(df10closed$bitterness_23, df10closed$bitterness_20, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10closed$bitterness_23 and df10closed$bitterness_20
+t = -1.569, df = 28, p-value = 0.9361
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -1.401458       Inf
+sample estimates:
+mean difference 
+     -0.6724138 
+t.test(df10closed$bitterness_24, df10closed$bitterness_22, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10closed$bitterness_24 and df10closed$bitterness_22
+t = 0.33468, df = 28, p-value = 0.3702
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.6335457        Inf
+sample estimates:
+mean difference 
+      0.1551724 
+
+
+t.test(df10closed$bitterness_13, df10closed$bitterness_15, 
+       paired = TRUE, alternative = "two.sided")
+
+	Paired t-test
+
+data:  df10closed$bitterness_13 and df10closed$bitterness_15
+t = -0.14838, df = 28, p-value = 0.8831
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -0.7657865  0.6623382
+sample estimates:
+mean difference 
+    -0.05172414 
+t.test(df10closed$bitterness_17, df10closed$bitterness_14, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10closed$bitterness_17 and df10closed$bitterness_14
+t = 0.38954, df = 28, p-value = 0.3499
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.4992545        Inf
+sample estimates:
+mean difference 
+      0.1482759 
+t.test(df10closed$bitterness_18, df10closed$bitterness_16, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10closed$bitterness_18 and df10closed$bitterness_16
+t = 0.60412, df = 28, p-value = 0.2753
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.4696223        Inf
+sample estimates:
+mean difference 
+      0.2586207 
+```
+
+- Ratings between the 8% skim milk and 8% water were NSD (t = 1.692, p = 0.102) 
+- Ratings between the 8% skim milk and 8% water were NSD (t = -1.569, p = 0.94)
+- Ratings between the 8% whole milk and 8% water were NSD (t = 0.335, p = 0.37) 
+
+- Ratings between the 17% whole milk and 17% water were NSD (t = -0.148, p = 0.88)  
+- Ratings between the 17% skim milk and 17% water were NSD (t = 0.39, p = 0.94)
+- Ratings between the 17% whole milk and 17% water were NSD (t = 0.604, p = 0.37) 
+
+
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1ClosedMilkRatingsViz-1.png" alt="R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars." width="672" />
+<p class="caption">(\#fig:study1ClosedMilkRatingsViz)R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
+</div>
+
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1ClosedWaterRatingsViz-1.png" alt="R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars." width="672" />
+<p class="caption">(\#fig:study1ClosedWaterRatingsViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose closed condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
+</div>
+
+- while there was significance in discrimination between the whole milk/water at the 8% level, they were not reflected in the ratings (Figure \@ref(fig:study1ClosedWaterRatingsViz)).
+
+## Nose Open Condition
+### Participant Data
+
+``` r
+Study1MetaOpen <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 13) %>% clean_names()
+colnames(Study1MetaOpen)
+```
+
+```
+##  [1] "panelist_code"         "age"                   "gender"               
+##  [4] "indian_alaskan"        "asian_indian_islander" "black"                
+##  [7] "hispanic_latino"       "white"                 "other"                
+## [10] "race_comment"          "consumption"           "sweetener"            
+## [13] "sweetener_comments"    "whitener"              "whitener_comments"    
+## [16] "how_white"
+```
+
+``` r
+Study1MetaOpen %>% filter(consumption == "6") 
+```
+
+```
+## # A tibble: 0 × 16
+## # ℹ 16 variables: panelist_code <chr>, age <dbl>, gender <dbl>,
+## #   indian_alaskan <dbl>, asian_indian_islander <dbl>, black <dbl>,
+## #   hispanic_latino <dbl>, white <dbl>, other <dbl>, race_comment <chr>,
+## #   consumption <dbl>, sweetener <dbl>, sweetener_comments <chr>,
+## #   whitener <dbl>, whitener_comments <chr>, how_white <dbl>
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+
+describe(Study1MetaOpen)[2,] %>% select(mean, sd, median, min, max) #age
+```
+
+```
+##      mean    sd median min max
+## age 29.15 11.17     26  22  85
+```
+
+``` r
+Study1MetaOpen %>% count(gender) # 10 males, 24 females
+```
+
+```
+## # A tibble: 2 × 2
+##   gender     n
+##    <dbl> <int>
+## 1      1    10
+## 2      2    24
+```
+
+``` r
+Study1MetaOpen %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+```
+
+```
+## # A tibble: 2 × 3
+## # Groups:   sweetener [2]
+##   sweetener   `1`   `2`
+##       <dbl> <int> <int>
+## 1         1    17     1
+## 2         2    11     5
+```
+
+``` r
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study1MetaOpen %>% count(consumption)
+```
+
+```
+## # A tibble: 5 × 2
+##   consumption     n
+##         <dbl> <int>
+## 1           1    18
+## 2           2    10
+## 3           3     1
+## 4           4     3
+## 5           5     2
+```
+
+``` r
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+
+
+### R Index
+The R critical value for a 2-tailed test (milk comparisons) is **0.63**.  
+
+
+
+
+- no discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = 0.52, p > 0.05)  
+
+
+- no discrimination seen between when 17% skim milk and 17% whole milk was added to coffee (R Index = 0.57, p > 0.05)  
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1OpenMilkRViz-1.png" alt="R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose open condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05)." width="672" />
+<p class="caption">(\#fig:study1OpenMilkRViz)R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose open condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05).</p>
+</div>
+
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter. The critical value for a one tailed R-index calculation is **0.61**.  
+
+
+
+
+
+- no discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = 0.48, p > 0.05)  
+- no discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = 0.596, p > 0.05)   
+
+
+
+- no discrimination between the 17% skim milk and 17% water samples (R Index = 0.58, p > 0.05)  
+- discrimination seen between the 17% whole milk and 17% water samples (R Index = 0.74, p $\le$ **0.001**)  
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1OpenedWaterRViz-1.png" alt="R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05)." width="672" />
+<p class="caption">(\#fig:study1OpenedWaterRViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05).</p>
+</div>
+
+- In the nose open condition, only the 17% water sample was discriminated against the 17% whole milk sample on bitterness.
+
+### Ratings  
+
+
+
+Table: (\#tab:study1KableOpenRatings)Bitterness intensities, and standard error of cold brew coffee samples evaluated in nose opened condition. Each 2 rows represent the two samples presented in a paired comparison format.
+
+|Sample        | Intensity|        se|
+|:-------------|---------:|---------:|
+|bitterness_13 |  4.711765| 0.3855862|
+|bitterness_15 |  4.382353| 0.3764803|
+|bitterness_14 |  4.758824| 0.3446334|
+|bitterness_17 |  5.117647| 0.3243386|
+|bitterness_16 |  4.220588| 0.3639205|
+|bitterness_18 |  5.361765| 0.3609014|
+|bitterness_19 |  5.079412| 0.3245394|
+|bitterness_21 |  5.235294| 0.3910971|
+|bitterness_20 |  5.150000| 0.3255942|
+|bitterness_23 |  5.205882| 0.3650981|
+|bitterness_22 |  4.994118| 0.3599104|
+|bitterness_24 |  5.455882| 0.3363904|
+
+The Bonferroni corrected $\alpha$ would be **0.0167**.
+
+
+``` r
+t.test(df10opened$bitterness_19, df10opened$bitterness_21, 
+       paired = TRUE, alternative = "two.sided") 
+
+	Paired t-test
+
+data:  df10opened$bitterness_19 and df10opened$bitterness_21
+t = -0.48976, df = 33, p-value = 0.6275
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -0.8034359  0.4916712
+sample estimates:
+mean difference 
+     -0.1558824 
+t.test(df10opened$bitterness_23, df10opened$bitterness_20, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10opened$bitterness_23 and df10opened$bitterness_20
+t = 0.20927, df = 33, p-value = 0.4178
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.3960275        Inf
+sample estimates:
+mean difference 
+     0.05588235 
+t.test(df10opened$bitterness_24, df10opened$bitterness_22, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10opened$bitterness_24 and df10opened$bitterness_22
+t = 1.455, df = 33, p-value = 0.07755
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.07531184         Inf
+sample estimates:
+mean difference 
+      0.4617647 
+
+t.test(df10opened$bitterness_13, df10opened$bitterness_15, 
+       paired = TRUE, alternative = "two.sided")
+
+	Paired t-test
+
+data:  df10opened$bitterness_13 and df10opened$bitterness_15
+t = 1.3597, df = 33, p-value = 0.1831
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -0.1634718  0.8222954
+sample estimates:
+mean difference 
+      0.3294118 
+t.test(df10opened$bitterness_17, df10opened$bitterness_14, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10opened$bitterness_17 and df10opened$bitterness_14
+t = 1.1682, df = 33, p-value = 0.1256
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ -0.1610135        Inf
+sample estimates:
+mean difference 
+      0.3588235 
+t.test(df10opened$bitterness_18, df10opened$bitterness_16, 
+       paired = TRUE, alternative = "greater")
+
+	Paired t-test
+
+data:  df10opened$bitterness_18 and df10opened$bitterness_16
+t = 3.8213, df = 33, p-value = 0.0002785
+alternative hypothesis: true mean difference is greater than 0
+95 percent confidence interval:
+ 0.6357805       Inf
+sample estimates:
+mean difference 
+       1.141176 
+  t.test(df10opened$bitterness_18, df10opened$bitterness_16, 
+         paired = TRUE, alternative = "greater")$p.value <= (0.05/3)
+[1] TRUE
+```
+
+- NSD between 8% skim and whole milk (t = -0.49, p = 0.63)
+- NSD between 8% skim and 8% water ratings (t = -0.08, p = 0.53)  
+- NSD between 8% whole milk and 8% water ratings (t = 1.46, p = 0.078)  
+
+- NSD between 17% skim and 17% whole milk ratings (t = 1.36, p = 0.18)  
+- NSD between 17% skim and 17% water ratings (t = 1.17, p = 0.13)  
+- Significant difference between 17% whole milk and 17% water ratings (t = 3.82, p = **2.8\times 10^{-4}**)  
+
+
+
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1OpenedMilkRatingsViz-1.png" alt="R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars." width="672" />
+<p class="caption">(\#fig:study1OpenedMilkRatingsViz)R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
+</div>
+
+
+<div class="figure">
+<img src="01-Bitter10-V3_files/figure-html/study1OpenedWaterRatingsViz-1.png" alt="R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p &gt; 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p &lt; 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars." width="672" />
+<p class="caption">(\#fig:study1OpenedWaterRatingsViz)R Index of paired comparison between skim milk and water at an 8% addition level and 17% addition level in a nose opened condition. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). Bitterness intensity ratings (from 0 - 10) are represented as violin plots showing the distribution of scaling responses. Means are presented as black dots with standard error bars.</p>
+</div>
+
