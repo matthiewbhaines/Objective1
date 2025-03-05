@@ -2,7 +2,7 @@
 title: "Objective 1: Characterization"
 author: "Matthiew Haines"
 date: "`r Sys.Date()`"
-site: bookdown::gitbook
+site: bookdown::bookdown_site
 documentclass: book
 bibliography: [packages.bib, MyLibrary.bib]
 description: |

@@ -7,11 +7,11 @@ language:
     chapter_name: "Chapter "
 rmd_files: [
   "index.Rmd",
-  "01-Bitter10-V2.Rmd",
+  "01-Bitter10-V3.Rmd",
   "02-Sour10.Rmd",
   "03-Bitter05.Rmd",
   "04-Sour05.Rmd",
   "05-TAData.Rmd"
 ]
 output_dir: "docs"
-
+#pandoc_args: ["--implicit-figures"]

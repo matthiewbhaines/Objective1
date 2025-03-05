@@ -1,17 +1,24 @@
+#bookdown::gitbook:
+#  css: style.css
+#  config:
+#    toc:
+#      before: |
+#        <li><a href="./">Objective 1 Analysis</a></li>
+#      after: |
+#        <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+#    edit: https://github.com/USERNAME/REPO/edit/BRANCH/%s
+#    download: ["pdf", "epub"]
+#bookdown::pdf_book:
+#  includes:
+#    in_header: preamble.tex
+#  latex_engine: xelatex
+#  citation_package: natbib
+#  keep_tex: yes
+#bookdown::epub_book: default
 bookdown::gitbook:
-  css: style.css
-  config:
-    toc:
-      before: |
-        <li><a href="./">Objective 1 Analysis</a></li>
-      after: |
-        <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-    edit: https://github.com/USERNAME/REPO/edit/BRANCH/%s
-    download: ["pdf", "epub"]
-bookdown::pdf_book:
-  includes:
-    in_header: preamble.tex
-  latex_engine: xelatex
+  number_sections: true
+  fig_caption: true
+  highlight: "default"
+  toc_depth: 2
+#  toc_float: true
   citation_package: natbib
-  keep_tex: yes
-bookdown::epub_book: default
