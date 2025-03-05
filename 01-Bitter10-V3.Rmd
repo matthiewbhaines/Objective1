@@ -1,0 +1,427 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# 1:10 Bitterness {#Bitter10}
+
+This will be the data analysis and results of the 1:10 nose closed study run in December 2024 and the 1:10 nose open study run in September 2023.  
+
+A 1:10 brew strength (coffee:water, w/w) is representative of a strong ratio used by everyday consumers. Our hypotheses was:  
+
+> Milk will reduce the bitterness of cold brew coffee more than water  
+
+This hypothesis is thought to be seen regardless of condition (nose closed or nose open). 
+
+Some interpretations of expected data would be:
+
+- In the nose closed condition a reduction in bitterness from the milky coffee would suggest a physicochemical interaction between the milk and coffee  
+- Milk, being 86% water [@walstraDairyTechnologyPrinciples1999] could have a similar effect as water would when added to coffee   
+- In the nose opened condition, a reduction in bitterness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
+
+> Inclusion criteria included drinking coffee at least once a month.
+
+```{r study1library, message=FALSE, warning=FALSE, include=FALSE}
+# data wrangling
+library(plyr)
+library(tidyverse) # data wrangling
+library(str2str) # R viz wrangling
+library(readxl) # read in data
+library(Rmisc) # summarySE()
+library(agricolae) #LSD test
+library(janitor) #clean_names()
+library(tibble)
+library(psych)
+
+#visualizations
+library(ggplot2) # plotting
+library(grid) # adjusting axes on plots
+library(ggsignif) #add signif to plots
+library(cowplot) #combining plots
+library(patchwork)
+library(knitr)
+library(bookdown)
+```
+
+## Nose Closed Condition
+### Participant Data
+```{r study1MetaClosed}
+Study1Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
+colnames(Study1Meta)
+
+Study1Meta %>% filter(consumption == "6") #osu27
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+
+Study1MetaInc <- Study1Meta %>% filter(panelist_code != "osu27")
+describe(Study1MetaInc)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study1MetaInc %>% count(gender) # 11 males, 18 females
+
+Study1MetaInc %>% group_by(sweetener, whitener) %>% 
+  tally() %>% 
+  spread(whitener, n) %>% 
+  replace(is.na(.), 0)
+# 11 - whiten and sweeten
+# 12 - whiten, no sweeten
+# 21 - sweeten, no whiten
+# 22 - black coffee drinker
+
+Study1MetaInc %>% count(consumption)
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
+
+- one participant (F) drank coffee less frequently than once a month. therefore they will be removed
+
+```{r study1Rcriti, include=FALSE}
+# R-index is a non-parametric test related to the Whitney *U* and the Wilcox *W* test.
+# It recreates a ROC (receiver operating characteristic) curve based on choice/confidence data.
+# The statistic can be interpreted as the proportion of people who chose sample Y over X, *P(X \< Y)*.
+# From @biRindexCriticalValue2020
+
+Rcriti<- function(nc, nt, alpha, side) {#R-index critical value in difference testing, i.e.,rc= 100*(Rc-0.5); Rc=0.5+rc/100
+
+#nc, nt are sample sizes of the control sample and the test sample
+
+#alpha is a significance level; side=1 is a one-sided test and side=2 is two-sided test
+
+#See, @biUpdatedExtendedTable2007
+
+if(side==2){
+
+z <- qnorm(1 - alpha/2)}
+
+if(side==1)
+
+{z<-qnorm(1-alpha)}
+
+rcf <- function(Rc, nc, nt, z)
+
+{
+
+q1 <- Rc/(2 - Rc)
+
+q2 <- (2 * Rc^2)/(1 + Rc)
+
+va <- Rc * (1 - Rc) + (nt - 1) * (q1 - Rc^2) + (nc - 1) * (q2 - Rc^2)
+
+va <- va/(nc * nt)
+
+s <- sqrt(va)
+
+(Rc - 0.5)/s - z
+
+}
+
+Rc <- uniroot(rcf, interval = c(0.5, 0.9999), nc = nc, nt = nt, z = z)
+
+Rc <- Rc[[1]]
+
+rc <- 100 * (Rc - 0.5)
+
+rc <- round(rc, 2)
+
+rc
+
+cat("rc and Rc values:","/n")
+
+all<-c(rc,Rc)
+
+all<-round(all,2)
+
+all
+
+}
+```
+```{r study1RIndex, include=FALSE}
+RIndex <- function(a,b,c,d,e,f,n) {
+# a = S!, b = S, c = S?
+# d = N?, e = N, f = N!, n = sample size
+  aa <- a*(a+b+c+d+e)
+  bb <- b*(a+b+c+d)
+  cc <- c*(a+b+c)
+  dd <- d*(a+b)
+  ee <- e*a
+  prod <- .5*((a*f)+ (b*e)+ (c*d)+ (c*d)+ (b*e)+ (a*f))
+  denom <- (n^2)
+  
+  index<- sum(aa,bb,cc,dd,ee,prod)/denom 
+  #formula from [@omahonySensoryEvaluationFood1986]
+  
+  if (1-index >= 0.5){
+    r <- 1-index
+    print(c(r, "Signal")) #this says which S/N was > 50%
+  } else {
+    r <- index
+    print(c(r, "Noise")) #this says which S/N was > 50%
+  }
+}
+
+RIndexV2 <- function(.tibble){
+  .tibble[,3]
+  N <- sum(.tibble[,3])
+  aa <- .tibble[1,3]*sum(.tibble[1,3],.tibble[2,3],.tibble[3,3], .tibble[6,3], .tibble[5,3])
+  bb <- .tibble[2,3]*sum(.tibble[1,3],.tibble[2,3],.tibble[3,3],.tibble[6,3])
+  cc <- .tibble[3,3]*sum(.tibble[1,3],.tibble[2,3],.tibble[3,3])
+  dd <- .tibble[6,3]*sum(.tibble[1,3],.tibble[2,3])
+  ee <- .tibble[5,3]*.tibble[1,3]
+  prod <- sum((.tibble[1,3]*.tibble[4,3]), (.tibble[2,3]*.tibble[5,3]), (.tibble[3,3]*.tibble[6,3]))
+  denom <- (N^2)
+  index<- sum(aa,bb,cc,dd,ee,prod)/denom 
+  
+ # if (1-index >= 0.5){
+#    r <- 1-index
+#    print(tibble(RIND = r, sample = as.numeric(.tibble[4,1]))) #this says which S/N was > 50%
+#  } else {
+#    r <- index
+#    print(tibble(RIND = r, sample = as.numeric(.tibble[1,1]))) #this says which S/N was > 50%
+#  }
+  print(tibble_row(RIND_S = index, RIND_N = 1-index))
+#print(tibble_row(aa, bb,cc,dd,ee, prod, index, .name_repair = "universal"))
+}
+# 02032025: can incorporate RCriti function to include what the RCrit would be with this sample size (alternatively, could include the calculation for an exact p-value)
+```
+
+```{r study1closed data wrangling, include=FALSE}
+brew10closed <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 2) 
+# ~/ not necessary when in working directory, just use "filename.xlsx"
+
+df10closed <- t(brew10closed) %>% as.data.frame() %>% row_to_names(row_number = 1) %>% clean_names()
+chars <- sapply(df10closed, is.character)
+df10closed[ ,chars] <- as.data.frame(apply(df10closed[,chars],2, as.numeric))
+# turn data frame from char to numeric
+
+df10closed <- df10closed %>% rownames_to_column(var = "participant")
+# create participant column
+
+df10closed <- df10closed %>% filter(participant != "osu27")
+```
+
+### R Index  
+In the paired comparisons between when skim milk or whole milk was added to the coffee, there is not enough evidence to suggest one will reduce the bitterness more than the other [cf. @keastModificationBitternessCaffeine2008].  
+
+02032025: I guess, according to @keastModificationBitternessCaffeine2008, the whole milk would be the signal, as it would be expected to be more bitter than the skim milk (again, based solely on this paper). 
+
+The critical value for a 2-tailed test is **`r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2],2)`**.  
+```{r study1closed rindex milks, echo=FALSE, include=FALSE}
+Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 2)
+```
+```{r study1closed 8% milk, include=FALSE}
+# 02032025: whole milk as signal, skim milk as noise
+Milk10S8C <- RIndexV2(df10closed %>% select(comparison_19_v_21_more_bitter, confidence_21) %>%
+                        count(comparison_19_v_21_more_bitter, confidence_21)) 
+# since significant at p > = 0.05, check for p = 0.01
+Rcriti(length(df10closed$participant), length(df10closed$participant), 0.01, 2)
+```
+
+- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8C$RIND_N), 2)`, p $\leq$ **0.05**)  
+    + interestingly, the skim milk sample (the "noise") was chosen more frequently than the whole milk sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_19_v_21_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
+
+```{r study1closed 17% milk, include=FALSE}
+Milk10S17C <- RIndexV2(df10closed %>% select(comparison_13_v_15_more_bitter, confidence_15) %>% 
+  group_by(comparison_13_v_15_more_bitter) %>% 
+  mutate(confidence_15 = factor(confidence_15, levels = c(1,2,3))) %>% 
+  count(confidence_15, .drop = F))
+```
+
+- no discrimination between 17% skim milk or 17% whole milk added to coffee (R Index (*_S*) = `r round(as.numeric(Milk10S17C$RIND_N), 2)`, p > 0.05)  
+
+```{r study1closed r wrangling milk, include=FALSE}
+Milk10R <- tibble(
+  Sample = "sample",
+  Percent = rep(factor(c("8% Addition", "17% Addition"),
+                   levels = c("8% Addition", "17% Addition")), each = 2),
+  Condition = "Closed",
+  Rindex = c(Milk10S8C$RIND_S, Milk10S8C$RIND_N, Milk10S17C$RIND_S, Milk10S17C$RIND_N),
+  Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 2)[2]),
+  Signal = rep(c("Signal", "Noise"), 2),
+  Sig = ifelse(abs(Rindex) >= Critical & Signal == "Signal", "#B22222",
+               ifelse(abs(Rindex) >= Critical & Signal == "Noise", "white",
+                      "#888888")),
+  Addition = c("Whole", "Skim", "Whole", "Skim")
+  )
+
+compareA <- Milk10R %>% filter(Sig %in% "#B22222")
+
+rcritical_10 <- Milk10R %>% filter(Percent == "8% Addition")
+
+sig_levels <- c("#B22222", "#888888", "white")
+
+study1closedMilkRViz <- Milk10R %>% 
+  filter(Rindex >= 0.50) %>% 
+  ggplot(aes(x = Sample, y = Rindex, fill = Sig)) +
+  geom_col(width = 0.5, color = "black") +
+  facet_grid(~Percent) +
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  coord_cartesian(ylim = c(0.5, 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  # scale_x_discrete(labels = c("Skim", "Whole")) + # want to identify whic hsample is named in column
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareA,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_text(data = rcritical_10,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank(),
+        legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  geom_text(data = Milk10R, aes(Sample, Rindex, label = Addition), vjust = 2) 
+#Note 01092025: Chris mentioned you could also present the Rindex graphs with the y-axis set at 50%, s.t. Rindex > 50% are above the line, Rindex < 50% are below the line
+# 02032025: could you identify which sample is above/below the line with annotations?
+# 03052025: code below shows both skim and whole r-index (0-100%)
+Milk10R %>% 
+  ggplot(aes(x = Signal, y = Rindex, fill = Sig)) +
+  geom_col(color = "black") +
+  facet_grid(~Percent) +
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  #coord_cartesian(ylim = c(0.5, 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareA,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_text(data = rcritical_10,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x=element_blank(),
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank(),
+        legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  geom_text(data = Milk10R, aes(Signal, Rindex, label = Addition), vjust = 2) 
+```
+```{r study1ClosedMilkRViz, echo=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. The Skim Milk R-index is positioned above the thick horizontal line; the Whole Milk R-index is positioned below. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the skim milk sample ('Signal') was significant; White bars indicate the whole milk sample ('Noise') was significant (p < 0.05). All significance at alpha = 0.10 is noted."
+study1closedMilkRViz
+# LaTeX is not supported in figure captions
+```
+
+For the paired comparisons between milk and water, we hypothesized that the addition of milk would reduce the bitterness, therefore making the water sample the more bitter sample. The critical value for a one tailed R-index calculation is **`r round(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2], 2)`**.  
+
+```{r study1closed rindex water, echo=FALSE, include=FALSE}
+Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)
+```
+
+```{r study1closed 8% water, include=FALSE}
+water10S8C <- RIndexV2(df10closed %>% select(comparison_20_v_23_more_bitter, confidence_23) %>% count(comparison_20_v_23_more_bitter, confidence_23) %>% arrange(desc(comparison_20_v_23_more_bitter))) 
+Rcriti(length(df10closed$participant), length(df10closed$participant), 0.1, 1)
+
+
+water10W8C <- RIndexV2(df10closed %>% select(comparison_22_v_24_more_bitter, confidence_24) %>% 
+  group_by(comparison_22_v_24_more_bitter) %>% 
+  mutate(confidence_24 = factor(confidence_24, levels = c(1,2,3))) %>% 
+  count(confidence_24, .drop = F) %>% arrange(desc(comparison_22_v_24_more_bitter)))
+```
+
+- marginal discrimination seen between when 8% skim milk and 8% water was added to coffee (R Index = `r round(water10S8C$RIND_N, 2)`, p < *0.10*)  
+
+   + interestingly, the skim milk sample (the "noise") was chosen more frequently than the water sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_20_v_23_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
+
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(water10W8C$RIND_S, 2)`, p $\le$ **0.05**)   
+
+```{r study1closed 17% water, include=FALSE}
+water10S17C <- RIndexV2(df10closed %>% select(comparison_14_v_17_more_bitter, confidence_17) %>% count(comparison_14_v_17_more_bitter, confidence_17) %>% arrange(desc(comparison_14_v_17_more_bitter))) 
+
+water10W17C <- RIndexV2(df10closed %>% select(comparison_16_v_18_more_bitter, confidence_18) %>% 
+  group_by(comparison_16_v_18_more_bitter) %>% 
+  mutate(confidence_18 = factor(confidence_18, levels = c(1,2,3))) %>% 
+  count(confidence_18, .drop = F) %>% arrange(desc(comparison_16_v_18_more_bitter)))
+```
+- no discrimination between the 17% skim milk and 17% water samples (R Index = `r round(water10S17C$RIND_S, 2)`, p > 0.05)  
+- no discrimination between the 17% whole milk and 17% water samples (R Index = `r round(water10W17C$RIND_S, 2)`, p > 0.05)  
+
+```{r study1closed r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
+Water10R <- tibble( #from 02072025
+  Sample = factor(c(rep(c("B18","B17"), 4))),
+  Name = c("water10S8C", "water10S8C", "water10W8C", "water10W8C",
+             "water10S17C", "water10S17C", "water10W17C", "water10W17C"),
+  Percent = rep(factor(c("8% Addition", "17% Addition"),
+                   levels = c("8% Addition", "17% Addition")), each = 4),
+  Condition = "Closed",
+  Rindex = c(water10S8C$RIND_S, water10S8C$RIND_N, water10W8C$RIND_S, water10W8C$RIND_N,
+             water10S17C$RIND_S, water10S17C$RIND_N, water10W17C$RIND_S, water10W17C$RIND_N),
+  Signal = rep(c("Signal", "Noise"), 4),
+  Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2]),
+  Sig = ifelse(Rindex >= Critical & Signal == "Signal", "#B22222", "#888888"),
+  Comparison = c(rep(c("A", "A", "B", "B"), 2)),
+  Addition = rep(c("Water", "Skim", "Water", "Whole"),2)
+  )
+
+compareB <- Water10R %>% filter(Sig %in% "#B22222")
+
+rcritical_10W <- Water10R %>% filter(Sample == "B17" & Percent == "8% Addition")
+
+study1closedWaterRViz <- Water10R %>% 
+  filter(Rindex >= 0.50) %>% 
+  ggplot(aes(x = Comparison, y = Rindex, fill = Sig)) +
+  geom_col(color = "black") +
+  facet_grid(~Percent) +  
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), labels = scales::percent) +
+  coord_cartesian(ylim = c(0.5,1)) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index") +
+  geom_signif(data = compareB,
+              y_position = 0.9, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_signif(data = compareB,
+              y_position = 0.9, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("0.10")) +
+  geom_text(data = rcritical_10,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x =element_blank(),
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), 
+        axis.line.x = element_blank(),
+        legend.position = "none",
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  geom_text(data = Water10R, aes(Comparison, Rindex, label = Addition),
+            vjust = 2) +
+  geom_text(data = Water10R[6,], aes(Comparison, Rindex, label = Addition), vjust = -1)
+  
+#02032025: should the signal (water) still remain on top, or, for the purposes of this research, should the milk be on top? 
+```
+```{r study1ClosedWaterRViz, echo=FALSE, warning=FALSE}
+#| fig.cap = "R Index of paired comparison between skim milk, whole milk, and water at an 8% addition level and 17% addition level in a nose closed condition. The Milk R-indices are positioned above the thick horizontal line; the water R-index is positioned below. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). All significance at alpha = 0.10 is noted."
+# (02032025) is it important to note that if the water sample is chosen as the "more bitter" sample, then automatically, the milk sample must be discriminably less bitter?
+study1closedWaterRViz
+```
+
+- Interestingly, only comparisons at the 8% addition level reached significance
+    + the skim milk sample was chosen as more bitter compared to the whole milk sample (Figure \@ref(fig:study1ClosedMilkRViz))  
+    + the water sample was chosen as more bitter compared to the whole milk sample (Figure \@ref(fig:study1ClosedWaterRViz), red bar)
+    
+- This is somewhat counter intuitive to what we had hypothesized, as adding more milk (the 17% samples) should have also shown discrimination  
+    + what are alternative interpretations/explanations?
+      + *01092025*: could fat be creating an inhibitive coating on the tongue where bitter compounds can't connect to the receptors?
+      +*01142025*: the skim milk being perceived as more bitter could be a type I error, a false positive  
+      + *02032025*: it is counter to a physicochemical-based hypothesis, it is also unintuitive why significance is only seen at an 8% level (marginal with skim milk being more bitter than water (cf. @keastModificationBitternessCaffeine2008), the whole milk being less bitter than water)
