@@ -40,7 +40,7 @@ library(ggsignif) #add signif to plots
 library(cowplot) #combining plots
 library(patchwork)
 library(knitr)
-library(bookdown)
+#library(bookdown)
 ```
 
 ## Nose Closed Condition
@@ -215,7 +215,7 @@ Milk10S8C <- RIndexV2(df10closed %>% select(comparison_19_v_21_more_bitter, conf
 Rcriti(length(df10closed$participant), length(df10closed$participant), 0.01, 2)
 ```
 
-- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8C$RIND_N), 2)`, p $\leq$ **0.05**)  
+- discrimination seen between when 8% skim milk and 8% whole milk was added to coffee (R Index = `r round(as.numeric(Milk10S8C$RIND_S), 2)`, p $\leq$ **0.05**)  
     + interestingly, the skim milk sample (the "noise") was chosen more frequently than the whole milk sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_19_v_21_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
 
 ```{r study1closed 17% milk, include=FALSE}
@@ -225,42 +225,37 @@ Milk10S17C <- RIndexV2(df10closed %>% select(comparison_13_v_15_more_bitter, con
   count(confidence_15, .drop = F))
 ```
 
-- no discrimination between 17% skim milk or 17% whole milk added to coffee (R Index (*_S*) = `r round(as.numeric(Milk10S17C$RIND_N), 2)`, p > 0.05)  
+- no discrimination between 17% skim milk or 17% whole milk added to coffee (R Index = `r round(as.numeric(Milk10S17C$RIND_N), 2)`, p > 0.05)  
 
 ```{r study1closed r wrangling milk, include=FALSE}
 Milk10R <- tibble(
-  Sample = "sample",
+  Sample = c("Milk10S8C", "Milk10S8C", "Milk10S17C", "Milk10S17C"),
   Percent = rep(factor(c("8% Addition", "17% Addition"),
                    levels = c("8% Addition", "17% Addition")), each = 2),
   Condition = "Closed",
-  Rindex = c(Milk10S8C$RIND_S, -Milk10S8C$RIND_N, Milk10S17C$RIND_S, -Milk10S17C$RIND_N),
+  Rindex = c(Milk10S8C$RIND_S, Milk10S8C$RIND_N, Milk10S17C$RIND_S, Milk10S17C$RIND_N),
   Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 2)[2]),
   Signal = rep(c("Signal", "Noise"), 2),
-  Sig = ifelse(abs(Rindex) >= Critical & Signal == "Signal", "#B22222",
-               ifelse(abs(Rindex) >= Critical & Signal == "Noise", "white",
-                      "#888888"))
+  Sig = ifelse(Rindex >= Critical & Signal == "Signal", "#B22222", "#888888")
   )
 
-compareA <- Milk10R %>% 
-  filter(Sig %in% "#B22222")
-
+Milk10R$Signal <- forcats::fct_relevel(Milk10R$Signal, "Signal", "Noise")
+compareA <- Milk10R %>% filter(Sig %in% "#B22222")
 rcritical_10 <- Milk10R %>% filter(Percent == "8% Addition")
-
 sig_levels <- c("#B22222", "#888888", "white")
+Milk10R_Ylabels <- c("Signal" = "Skim Milk","Noise" = "Whole Milk" )
 
 study1closedMilkRViz <- Milk10R %>% 
-  ggplot(aes(x = Sample, y = Rindex, fill = Sig)) +
+  ggplot(aes(x = Signal, y = Rindex, fill = Sig)) +
   geom_col(width = 0.5, color = "black") +
   facet_grid(~Percent) +
   scale_fill_manual(breaks = sig_levels, values = sig_levels) +
-  scale_y_continuous(#expand = expansion(mult = c(0, .1)), labels = scales::percent
-    limits = c(-1, 1), 
-                     breaks = c(-1, -0.75, -0.5, -0.25, 0, .25, .5, .75, 1),
-                     labels = c("100%", "75%", "50%","25%", "0%", "25%", "50%", "75%", "100%")) +
-  scale_x_discrete(labels = c("Skim/Whole", "Skim/Whole")) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), #labels = scales::percent
+    limits = c(0, 1), 
+                     breaks = c(0, .25, .5, .75, 1),
+                     labels = c("0%", "25%", "50%", "75%", "100%")) +
+  scale_x_discrete(labels = c("Skim", "Whole")) +
   geom_hline(aes(yintercept = Critical), linetype = "longdash") +
-  geom_hline(aes(yintercept = -Critical), linetype = "longdash") +
-  geom_hline(yintercept = 0, linewidth = 1) +
   theme_bw() +
   labs(y = "R Index", x = "Sample") +
   geom_signif(data = compareA,
@@ -269,8 +264,6 @@ study1closedMilkRViz <- Milk10R %>%
               annotation = c("< 0.05")) +
   geom_text(data = rcritical_10,
             label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
-  geom_text(data = rcritical_10,
-            label = "R-crit", aes(y = -0.7, x = 0.6), size = 3) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.text = element_text(size = 12), # facet text size
@@ -281,10 +274,9 @@ study1closedMilkRViz <- Milk10R %>%
         strip.text.y = element_blank(),
         legend.position = "none") 
 #Note 01092025: Chris mentioned you could also present the Rindex graphs with the y-axis set at 50%, s.t. Rindex > 50% are above the line, Rindex < 50% are below the line
-# 02032025: could you identify which sample is above/below the line with annotations?
 ```
 ```{r study1ClosedMilkRViz, echo=FALSE}
-#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. The Skim Milk R-index is positioned above the thick horizontal line; the Whole Milk R-index is positioned below. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the skim milk sample ('Signal') was significant; White bars indicate the whole milk sample ('Noise') was significant (p < 0.05). All significance at alpha = 0.10 is noted."
+#| fig.cap = "R Index of paired comparison between skim milk and whole milk at an 8% addition level and 17% addition level in a nose closed condition. The Skim Milk R-index is positioned above the thick horizontal line; the Whole Milk R-index is positioned below. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the sample was significant. All significance at alpha = 0.10 is noted."
 study1closedMilkRViz
 # LaTeX is not supported in figure captions
 ```
@@ -310,7 +302,7 @@ water10W8C <- RIndexV2(df10closed %>% select(comparison_22_v_24_more_bitter, con
 
    + interestingly, the skim milk sample (the "noise") was chosen more frequently than the water sample (the "signal"): `r as.numeric(df10closed %>% count(comparison_20_v_23_more_bitter) %>% select(n) %>% slice(1L))`/`r length(df10closed$participant)`
 
-- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(water10W8C$RIND_S), 2)`, p $\le$ **0.05**)   
+- discrimination seen between when 8% whole milk and 8% water was added to coffee (R Index = `r round(water10W8C$RIND_S, 2)`, p $\le$ **0.05**)   
 
 ```{r study1closed 17% water, include=FALSE}
 water10S17C <- RIndexV2(df10closed %>% select(comparison_14_v_17_more_bitter, confidence_17) %>% count(comparison_14_v_17_more_bitter, confidence_17) %>% arrange(desc(comparison_14_v_17_more_bitter))) 
@@ -320,7 +312,7 @@ water10W17C <- RIndexV2(df10closed %>% select(comparison_16_v_18_more_bitter, co
   mutate(confidence_18 = factor(confidence_18, levels = c(1,2,3))) %>% 
   count(confidence_18, .drop = F) %>% arrange(desc(comparison_16_v_18_more_bitter)))
 ```
-- no discrimination between the 17% skim milk and 17% water samples (R Index = `r round(water10S17C$RIND_S, 2)`, p > 0.05)  
+- no discrimination between the 17% skim milk and 17% water samples (R Index = `r signif(water10S17C$RIND_S, 2)`, p > 0.05)  
 - no discrimination between the 17% whole milk and 17% water samples (R Index = `r round(water10W17C$RIND_S, 2)`, p > 0.05)  
 
 ```{r study1closed r wrangling water, include=FALSE, warning=FALSE, message=FALSE}
@@ -331,47 +323,77 @@ Water10R <- tibble(
   Percent = rep(factor(c("8% Addition", "17% Addition"),
                    levels = c("8% Addition", "17% Addition")), each = 4),
   Condition = "Closed",
-  Rindex = c(-water10S8C$RIND_S, water10S8C$RIND_N, -water10W8C$RIND_S, water10W8C$RIND_N,
-             -water10S17C$RIND_S, water10S17C$RIND_N, -water10W17C$RIND_S, water10W17C$RIND_N),
+  Rindex = c(water10S8C$RIND_S, water10S8C$RIND_N, water10W8C$RIND_S, water10W8C$RIND_N,
+             water10S17C$RIND_S, water10S17C$RIND_N, water10W17C$RIND_S, water10W17C$RIND_N),
   Signal = rep(c("Signal", "Noise"), 4),
   Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2]),
-  Sig = ifelse(abs(Rindex) >= Critical & Signal == "Signal", "#B22222",
-               ifelse(abs(Rindex) >= Critical & Signal == "Noise", "white",
-                      "#888888"))
+  Sig = ifelse(Rindex >= Critical & Signal == "Signal", "#B22222", "#888888")
   )
 
-compareB <- Water10R %>% filter(Sig %in% "#B22222")
+Water10R$Signal <- forcats::fct_relevel(Water10R$Signal, "Noise", "Signal")
 
+compareB <- Water10R %>% filter(Sig %in% "#B22222")
+Water10R_Ylabels <- c("Signal" = "Water","Noise" = "Milk" )
+Water10R$Add <- c("Water", "Skim", "Water", "Whole", "Water", "Skim", "Water", "Whole") 
+compareB.1 <- Water10R %>% filter(Signal == "Noise") %>% filter(Rindex == max(Rindex)) 
 
 rcritical_10W <- Water10R %>% filter(Sample == "B17" & Percent == "8% Addition")
 
-study1closedWaterRViz <- Water10R %>% 
-  ggplot(aes(x = Sample, y = Rindex, fill = Sig)) +
+#study1closedWaterRViz <- 
+Water10R %>% 
+  ggplot(aes(x = Name, y = Rindex, fill = Sig)) +
+  geom_col(width = 0.5, color = "black") +
+  facet_grid(Signal~Percent, labeller = labeller(Signal = as_labeller(Water10R_Ylabels))) +
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 1), 
+                     breaks = c(0, .25, .5, .75, 1),
+                     labels = c("0%", "25%", "50%", "75%", "100%")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareB,
+              y_position = 0.9, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_signif(data = compareB.1,
+              y_position = 0.90, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.10")) +
+  geom_text(data = rcritical_10,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x =element_blank(),
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), 
+        axis.line.x = element_blank(),
+        legend.position = "none") +
+  geom_text(data = Water10R %>% filter(Signal %in% "Noise"), aes(Sample, Rindex, label = Add),
+             vjust = 2)
+
+#02032025: should the signal (water) still remain on top, or, for the purposes of this research, should the milk be on top? 
+
+ggplot(aes(x = Signal, y = Rindex, fill = Sig)) +
   geom_col(width = 0.5, color = "black") +
   facet_grid(~Percent) +
   scale_fill_manual(breaks = sig_levels, values = sig_levels) +
-  scale_y_continuous(#expand = expansion(mult = c(0, .1)), labels = scales::percent
-    limits = c(-1, 1), 
-                     breaks = c(-1, -0.75, -0.5, -0.25, 0, .25, .5, .75, 1),
-                     labels = c("100%", "75%", "50%","25%", "0%", "25%", "50%", "75%", "100%")) +
-  scale_x_discrete(labels = c("Skim/Water", "Whole/Water", "Skim/Water", "Whole/Water")) +  
-  geom_signif(data = compareB,
-              y_position = -0.95, xmin = 1.8, xmax = 2.2,
-              tip_length = 0,
-              annotation = c("< 0.05")) +
-  geom_signif(data = compareB,
-              y_position = 0.95, xmin = 0.8, xmax = 1.2,
-              tip_length = 0,
-              annotation = c("< 0.10")) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), #labels = scales::percent
+    limits = c(0, 1), 
+                     breaks = c(0, .25, .5, .75, 1),
+                     labels = c("0%", "25%", "50%", "75%", "100%")) +
+  scale_x_discrete(labels = c("Skim", "Whole")) +
   geom_hline(aes(yintercept = Critical), linetype = "longdash") +
-  geom_hline(aes(yintercept = -Critical), linetype = "longdash") +
-  geom_hline(yintercept = 0, linewidth = 1) +
   theme_bw() +
   labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareA,
+              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
   geom_text(data = rcritical_10,
             label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
-  geom_text(data = rcritical_10,
-            label = "R-crit", aes(y = -0.7, x = 0.6), size = 3) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         strip.text = element_text(size = 12), # facet text size
@@ -382,8 +404,99 @@ study1closedWaterRViz <- Water10R %>%
         strip.text.y = element_blank(),
         legend.position = "none") 
 
-#02032025: should the signal (water) still remain on top, or, for the purposes of this research, should the milk be on top? 
+
+
+
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 1), 
+                     breaks = c(0, .25, .5, .75, 1),
+                     labels = c("0%", "25%", "50%", "75%", "100%")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareA,
+              y_position = 0.9, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_text(data = compareA,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x =element_blank(),
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), 
+        axis.line.x = element_blank(),
+        legend.position = "none") 
+
 ```
+
+```{r}
+# sent to Chris on 02072025 for feedback
+Water10R <- tibble(
+  Sample = factor(c(rep(c("B18","B17"), 4))),
+  Name = c("water10S8C", "water10S8C", "water10W8C", "water10W8C",
+             "water10S17C", "water10S17C", "water10W17C", "water10W17C"),
+  Percent = rep(factor(c("8% Addition", "17% Addition"),
+                   levels = c("8% Addition", "17% Addition")), each = 4),
+  Condition = "Closed",
+  Rindex = c(water10S8C$RIND_S, water10S8C$RIND_N, water10W8C$RIND_S, water10W8C$RIND_N,
+             water10S17C$RIND_S, water10S17C$RIND_N, water10W17C$RIND_S, water10W17C$RIND_N),
+  Signal = rep(c("Signal", "Noise"), 4),
+  Critical = as.numeric(Rcriti(length(df10closed$participant), length(df10closed$participant), 0.05, 1)[2]),
+  Sig = ifelse(Rindex >= Critical & Signal == "Signal", "#B22222", "#888888"),
+  Comparison = c(rep(c("A", "A", "B", "B"), 2))
+  )
+
+Water10R$Signal <- forcats::fct_relevel(Water10R$Signal, "Noise", "Signal")
+
+compareB <- Water10R %>% filter(Sig %in% "#B22222")
+Water10R_Ylabels <- c(A = "Skim Milk", B = "Whole Milk" )
+Water10R$Add <- c("Water", "Skim", "Water", "Whole", "Water", "Skim", "Water", "Whole") 
+compareB.1 <- Water10R %>% filter(Signal == "Noise") %>% filter(Rindex == max(Rindex)) 
+
+rcritical_10W <- Water10R %>% filter(Sample == "B17" & Percent == "8% Addition")
+
+#study1closedWaterRViz <- 
+Water10R %>% 
+  ggplot(aes(x = Sample, y = Rindex, fill = Sig)) +
+  geom_col(width = 0.5, color = "black") +
+  facet_grid(Comparison~Percent, labeller = labeller(Comparison = as_labeller(Water10R_Ylabels))) +
+  scale_fill_manual(breaks = sig_levels, values = sig_levels) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)), limits = c(0, 1), 
+                     breaks = c(0, .25, .5, .75, 1),
+                     labels = c("0%", "25%", "50%", "75%", "100%")) +
+  geom_hline(aes(yintercept = Critical), linetype = "longdash") +
+  theme_bw() +
+  labs(y = "R Index", x = "Sample") +
+  geom_signif(data = compareB,
+              y_position = 0.9, xmin = 1.8, xmax = 2.2,
+              tip_length = 0,
+              annotation = c("< 0.05")) +
+  geom_signif(data = compareB.1,
+              y_position = 0.90, xmin = 0.8, xmax = 1.2,
+              tip_length = 0,
+              annotation = c("< 0.10")) +
+  geom_text(data = rcritical_10,
+            label = "R-crit", aes(y = 0.7, x = 0.6), size = 3) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 12), # facet text size
+        axis.text = element_text(size = 10), # axis text size
+        axis.title.y = element_text(size = 12),
+        axis.title.x =element_blank(),
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), 
+        axis.line.x = element_blank(),
+        legend.position = "none",
+        strip.background.y = element_blank(),
+        strip.text.y = element_blank()) +
+  geom_text(data = Water10R, aes(Sample, Rindex, label = Add),
+             vjust = 2)
+```
+
 ```{r study1ClosedWaterRViz, echo=FALSE, warning=FALSE}
 #| fig.cap = "R Index of paired comparison between skim milk, whole milk, and water at an 8% addition level and 17% addition level in a nose closed condition. The Milk R-indices are positioned above the thick horizontal line; the water R-index is positioned below. Dashed horizontal line represents the critical value, which denotes statistical significance, or discrimination between the samples on bitterness. Grey bars are not significant (p > 0.05). Red bars indicate the water sample ('Signal') was significant; White bars indicate the milk sample ('Noise') was significant (p < 0.05). All significance at alpha = 0.10 is noted."
 # (02032025) is it important to note that if the water sample is chosen as the "more bitter" sample, then automatically, the milk sample must be discriminably less bitter?
@@ -984,3 +1097,6 @@ Water10RCombineViz
     + the whole milk sample was chosen as the less bitter sample compared to water (red bar)  
 - Neither of these effects are seen in the nose opened condition
     + this data does not look at the possibility of removing panelists in the nose closed condition that responded that they were not regular coffee drinkers in the demographic questions. It may be of interest to see how/if the data changes when removing them (or segmenting them).  
+    
+
+

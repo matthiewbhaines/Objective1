@@ -25,6 +25,7 @@ library(Rmisc) # summarySE()
 library(agricolae) #LSD test
 library(janitor) #clean_names()
 library(tibble)
+library(psych)
 
 #visualizations
 library(ggplot2) # plotting
@@ -874,6 +875,20 @@ Water10RCombineViz
     + the whole milk sample was chosen as the less bitter sample compared to water (red bar)  
 - Neither of these effects are seen in the nose opened condition
     + this data does not look at the possibility of removing panelists in the nose closed condition that responded that they were not regular coffee drinkers in the demographic questions. It may be of interest to see how/if the data changes when removing them (or segmenting them).  
+
+## Participant Data
+```{r study1Meta}
+Study1Meta <- read_xlsx(path = "Objective1CompiledDataWithIndex.xlsx", sheet = 4) %>% clean_names()
+colnames(Study1Meta)
+
+describe(Study1Meta)[2,] %>% select(mean, sd, median, min, max) #age
+
+Study1Meta %>% count(gender) # 11 males, 19 females
+
+Study1Meta %>% filter(consumption == "6")
+# 1 - daily; 2 - 2-3/wk; 3- 1/wk
+# 4 - 2-3/mo; 5 - 1/mo; 6 <1/mo
+```
 
 ## Notes {-}
 <input type="checkbox"> examine the participant data  

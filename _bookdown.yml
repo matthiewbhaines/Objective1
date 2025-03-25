@@ -11,7 +11,7 @@ rmd_files: [
   "02-Sour10.Rmd",
   "03-Bitter05.Rmd",
   "04-Sour05.Rmd",
-  "05-TAData.Rmd"
+  "05-TAData-V3.Rmd"
 ]
 output_dir: "docs"
 #pandoc_args: ["--implicit-figures"]
