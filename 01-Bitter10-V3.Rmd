@@ -1,7 +1,7 @@
 ---
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 # 1:10 Bitterness {#Bitter10}
 
@@ -20,6 +20,23 @@ Some interpretations of expected data would be:
 - In the nose opened condition, a reduction in bitterness from the milky coffee could suggest a cross-modal interaction (particularly if no effect is seen in the nose closed condition) 
 
 > Inclusion criteria included drinking coffee at least once a month.
+
+03272025: What questions need answered?  
+
+- *condition*: does olfaction impact perception of bitterness?  
++ hyp: nose closed will have same effect as nose open condition  
++ bwtn subj design, compare p-values between conditions  
+  + is the bitterness of each sample significantly different across the conditions? (independent t-test, bonferroni)
+  + is the difference in sample intensity different across the conditions? (independent t-test, bonferroni)
+  
+- **addition**: is there a difference between what is added? (S-H, W-H, S-W)
++ hyp: milk will reduce bitterness more than water; skim might reduce more than whole (based on @keastModificationBitternessCaffeine2008; although @bennettUsingMilkFat2012 did not find milkfat difference) 
+  + R-index (2-AFC + confidence)
+  + t-test w/ bonferroni (intensity ratings)
+
+- quantity: does how much is added to the samples impact perceived bitterness?
++ hyp: adding 17% milk will reduce bitterness more than 8%
+  + paired t-test w/ bonferroni
 
 ```{r study1library, message=FALSE, warning=FALSE, include=FALSE}
 # data wrangling
@@ -43,6 +60,7 @@ library(knitr)
 library(bookdown)
 ```
 
+## Addition
 ## Nose Closed Condition
 ### Participant Data
 ```{r study1MetaClosed}
@@ -135,28 +153,28 @@ all
 }
 ```
 ```{r study1RIndex, include=FALSE}
-RIndex <- function(a,b,c,d,e,f,n) {
+#RIndex <- function(a,b,c,d,e,f,n) {
 # a = S!, b = S, c = S?
 # d = N?, e = N, f = N!, n = sample size
-  aa <- a*(a+b+c+d+e)
-  bb <- b*(a+b+c+d)
-  cc <- c*(a+b+c)
-  dd <- d*(a+b)
-  ee <- e*a
-  prod <- .5*((a*f)+ (b*e)+ (c*d)+ (c*d)+ (b*e)+ (a*f))
-  denom <- (n^2)
+#  aa <- a*(a+b+c+d+e)
+#  bb <- b*(a+b+c+d)
+#  cc <- c*(a+b+c)
+#  dd <- d*(a+b)
+#  ee <- e*a
+#  prod <- .5*((a*f)+ (b*e)+ (c*d)+ (c*d)+ (b*e)+ (a*f))
+#  denom <- (n^2)
   
-  index<- sum(aa,bb,cc,dd,ee,prod)/denom 
-  #formula from [@omahonySensoryEvaluationFood1986]
-  
-  if (1-index >= 0.5){
-    r <- 1-index
-    print(c(r, "Signal")) #this says which S/N was > 50%
-  } else {
-    r <- index
-    print(c(r, "Noise")) #this says which S/N was > 50%
-  }
-}
+#  index<- sum(aa,bb,cc,dd,ee,prod)/denom 
+#  #formula from [@omahonySensoryEvaluationFood1986]
+ 
+#  if (1-index >= 0.5){
+#    r <- 1-index
+#    print(c(r, "Signal")) #this says which S/N was > 50%
+#  } else {
+#    r <- index
+#    print(c(r, "Noise")) #this says which S/N was > 50%
+#  }
+#}
 
 RIndexV2 <- function(.tibble){
   .tibble[,3]
@@ -277,7 +295,7 @@ study1closedMilkRViz <- Milk10R %>%
         legend.position = "none",
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank()) +
-  geom_text(data = Milk10R, aes(Sample, Rindex, label = Addition), vjust = 1) 
+  geom_text(data = Milk10R, aes(Sample, Rindex, label = Addition), vjust = 2) 
 #Note 01092025: Chris mentioned you could also present the Rindex graphs with the y-axis set at 50%, s.t. Rindex > 50% are above the line, Rindex < 50% are below the line
 # 02032025: could you identify which sample is above/below the line with annotations?
 # 03052025: code below shows both skim and whole r-index (0-100%)
@@ -292,7 +310,7 @@ Milk10R %>%
   theme_bw() +
   labs(y = "R Index", x = "Sample") +
   geom_signif(data = compareA,
-              y_position = 0.95, xmin = 0.8, xmax = 1.2,
+              y_position = 0.95, xmin = 1.8, xmax = 2.2,
               tip_length = 0,
               annotation = c("< 0.05")) +
   geom_text(data = rcritical_10,
@@ -947,3 +965,121 @@ plot_grid(study1openedWaterRViz, study1OpenedWaterRatings + theme(strip.backgrou
 # see warning in study1OpenedWaterRViz
 ```
 
+## Condition
+### Same samples, different conditions (and different people)
+```{r}
+# create long data frame
+df10longjoin <- full_join(df10closed_ratings_long %>% mutate(Condition = c("closed")), df10opened_ratings_long %>% mutate(Condition = c( "opened"))) 
+
+df10longjoin %>% #test for constant variance
+  group_by(Sample) %>% 
+  rstatix::levene_test(Intensity ~ Condition) #for each sample, p < 0.05
+
+# test with equal var
+t.test(df10closed$bitterness_13, df10opened$bitterness_13, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+t.test(df10closed$bitterness_14, df10opened$bitterness_17, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+t.test(df10closed$bitterness_16, df10opened$bitterness_18, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+t.test(df10closed$bitterness_19, df10opened$bitterness_21, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+t.test(df10closed$bitterness_20, df10opened$bitterness_23, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+t.test(df10closed$bitterness_22, df10opened$bitterness_24, alternative = "two.sided", paired = FALSE, var.equal = TRUE)
+```
+
+There were no significant differences in the bitterness intensity ratings across the nose closed or nose opened condition.
+
+### Testing Sample Deltas
+```{r}
+df10closed %>% 
+  mutate(Delta1315 =c(.$bitterness_15 - .$bitterness_13),
+         Delta1417 = c(.$bitterness_17 - .$bitterness_14),
+         Delta1618 = c(.$bitterness_18 - .$bitterness_16),
+         Delta1921 =c(.$bitterness_21 - .$bitterness_19),
+         Delta2023 = c(.$bitterness_23 - .$bitterness_20),
+         Delta2224 = c(.$bitterness_24 - .$bitterness_22),
+         Condition = c("closed")
+         ) %>% 
+  select(participant, Condition, starts_with("Delta")) 
+
+df10opened %>% 
+  mutate(Delta1315 =c(.$bitterness_15 - .$bitterness_13),
+         Delta1417 = c(.$bitterness_17 - .$bitterness_14),
+         Delta1618 = c(.$bitterness_18 - .$bitterness_16),
+         Delta1921 =c(.$bitterness_21 - .$bitterness_19),
+         Delta2023 = c(.$bitterness_23 - .$bitterness_20),
+         Delta2224 = c(.$bitterness_24 - .$bitterness_22),
+         Condition = c("opened")
+         ) %>% 
+  select(participant, Condition, starts_with("Delta")) 
+
+df10Delta <- full_join(df10closed %>% 
+  mutate(Delta1315 =c(.$bitterness_15 - .$bitterness_13),
+         Delta1417 = c(.$bitterness_17 - .$bitterness_14),
+         Delta1618 = c(.$bitterness_18 - .$bitterness_16),
+         Delta1921 =c(.$bitterness_21 - .$bitterness_19),
+         Delta2023 = c(.$bitterness_23 - .$bitterness_20),
+         Delta2224 = c(.$bitterness_24 - .$bitterness_22),
+         Condition = c("closed")
+         ) %>% 
+  select(participant, Condition, starts_with("Delta")),
+  df10opened %>% 
+  mutate(Delta1315 =c(.$bitterness_15 - .$bitterness_13),
+         Delta1417 = c(.$bitterness_17 - .$bitterness_14),
+         Delta1618 = c(.$bitterness_18 - .$bitterness_16),
+         Delta1921 =c(.$bitterness_21 - .$bitterness_19),
+         Delta2023 = c(.$bitterness_23 - .$bitterness_20),
+         Delta2224 = c(.$bitterness_24 - .$bitterness_22),
+         Condition = c("opened")
+         ) %>% 
+  select(participant, Condition, starts_with("Delta")) 
+  ) 
+
+
+t.test(Delta1315 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+# skim milk found more bitter than whole milk in opened condition
+t.test(Delta1417 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)$p.value
+t.test(Delta1618 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+# the opened condition had the higher delta
+
+t.test(Delta1921 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+t.test(Delta2023 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+t.test(Delta2224 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+# the opened condition had the higher delta
+
+
+df10Delta %>% 
+  select(-participant) %>% 
+  pivot_longer(-c(Condition), names_to = "Comparison", values_to = "Delta") %>% 
+  ggplot(aes(x = Comparison, y = Delta, group = Condition, color = Condition)) + 
+  geom_col()
+
+DeltaP <- c(
+  round(t.test(Delta1315 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2),
+  round(t.test(Delta1417 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2),
+  round(t.test(Delta1618 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2),
+  round(t.test(Delta1921 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2),
+  round(t.test(Delta2023 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2),
+  round(t.test(Delta2224 ~ Condition, alternative = "two.sided", var.equal = TRUE, data = df10Delta)
+$p.value, 2)
+)
+
+summarySE(df10Delta %>% 
+  select(-participant) %>% 
+  pivot_longer(-c(Condition), names_to = "Comparison", values_to = "Delta"),
+  measurevar = "Delta", groupvars = c("Condition", "Comparison")) %>% 
+  select(Condition, Comparison, Delta, sd) %>% 
+  ggplot(aes(x = Comparison, y = Delta, group = Condition, color = Condition, fill = Condition)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  annotate(geom = "text", x = c(1:6), y = -.9, label = formatC(DeltaP, format = 'f', digits = 2)) +
+  #use formatC to include trailing zeros
+  scale_y_continuous(limits = c(-1, 1.25)) +
+  annotate(geom = "text", x = 1, y = -0.75, label = "p-value") +
+  geom_hline(yintercept = 0)
+
+# 03272025 could use ggsignif to include lines in comparisons, but likely not necessary
+```
+
+There were no significant differences in the deltas between comparisons across the nose closed or nose opened conditions. With the exception of the 17% skim milk/whole milk comparison, the nose opened condition always had a larger delta than the nose closed condition. Only the 17% whole milk/water comparison had a nose open delta greater than 1 point (on a 10 point scale).
